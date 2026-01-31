@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Admin Panel</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/admin.css') }}">
+</head>
+<body>
+
+<div class="admin-wrapper">
+
+  <!-- SIDEBAR -->
+  <aside class="admin-sidebar">
+    <h2 class="logo">Admin</h2>
+
+    <nav>
+      <a href="{{ url_for('admin_dashboard') }}">Dashboard</a>
+      <a href="{{ url_for('admin_inquiries') }}">Inquiries</a>
+      <a href="{{ url_for('change_admin_credentials') }}">Change Credentials</a>
+      <a href="{{ url_for('admin_logout') }}">Logout</a>
+    </nav>
+  </aside>
+
+  <!-- MAIN CONTENT -->
+  <main class="admin-content">
+    {% block content %}{% endblock %}
+  </main>
+
+</div>
+
+</body>
+</html>

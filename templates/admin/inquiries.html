@@ -1,0 +1,44 @@
+{% extends "admin/layout.html" %}
+
+{% block content %}
+<h1>Project Inquiries</h1>
+
+<table class="admin-table">
+  <tr>
+    <th>Name</th>
+    <th>Email</th>
+    <th>Status</th>
+    <th>Actions</th>
+  </tr>
+
+  {% for i in inquiries %}
+  <tr>
+    <td>{{ i.full_name }}</td>
+    <td>{{ i.email }}</td>
+
+    <td>
+      {% if i.is_contacted %}
+        <span class="status contacted">Contacted</span>
+      {% else %}
+        <span class="status pending">Pending</span>
+      {% endif %}
+    </td>
+
+    <td>
+      <button data-id="{{ i.id }}" class="btn-primary">View</button>
+      <button data-id="{{ i.id }}" class="btn-primary">
+        {% if i.is_contacted %}Undo{% else %}Mark Contacted{% endif %}
+      </button>
+    </td>
+  </tr>
+  {% endfor %}
+</table>
+
+
+<!-- MODAL -->
+<div id="inquiryModal" class="modal">
+  <div class="modal-content" id="modalContent"></div>
+</div>
+{% endblock %}
+
+<script src="{{ url_for('static', filename='js/admin.js') }}"></script>

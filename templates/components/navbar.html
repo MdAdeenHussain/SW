@@ -1,0 +1,45 @@
+<!-- NAV -->
+  <header class="navbar">
+    <header class="navbar">
+    <div class="navbar-container">
+
+      <!-- LOGO -->
+      <div class="logo">
+        <a href="/">
+          <!-- <img src="/static/images/HyperFitLogo.jpeg" class="logo-img" alt="Logo"> -->
+          <h1>SpydraWeb</h1>
+        </a>
+      </div>
+
+      <!-- DESKTOP LINKS -->
+      <nav class="nav-links">
+        <a href="#services">Services</a>
+        <a href="#portfolio">Portfolio</a>
+        <a href="#contact">Contact</a>
+      </nav>
+
+      <!-- RIGHT ACTIONS -->
+      <div class="nav-actions">
+        <a href="{{ url_for('inquiry') }}" class="btn-primary">Hire Me</a>
+        <div class="hamburger" onclick="openMobileMenu()">☰</div>
+      </div>
+
+    </div>
+  </header>
+
+  <!-- MOBILE OVERLAY -->
+  <div id="mobileOverlay" class="mobile-overlay" onclick="closeMobileMenu()"></div>
+
+  <!-- MOBILE MENU -->
+  <div id="mobileMenu" class="mobile-menu">
+    <div class="mobile-menu-header">
+      <span>Menu</span>
+      <span class="close-btn" onclick="closeMobileMenu()">✕</span>
+    </div>
+
+    <div class="mobile-menu-content">
+      <a href="#services" onclick="closeMobileMenu()">Services</a>
+      <a href="#portfolio" onclick="closeMobileMenu()">Portfolio</a>
+      <a href="#contact" onclick="closeMobileMenu()">Contact</a>
+    </div>
+  </div>

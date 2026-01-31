@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Admin Login</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/admin.css') }}">
+</head>
+<body>
+
+<section class="form-wrapper">
+<form method="POST" class="inquiry-form">
+
+<h2>Admin Login</h2>
+
+{% with messages = get_flashed_messages(category_filter=["error"]) %}
+  {% if messages %}
+    <div class="form-error">{{ messages[0] }}</div>
+  {% endif %}
+{% endwith %}
+
+<input type="email" name="email" placeholder="Admin Email" required>
+<input type="password" name="password" placeholder="Password" required>
+
+<button type="submit" class="btn-primary">Login</button>
+
+</form>
+</section>
+
+</body>
+</html>
