@@ -148,10 +148,44 @@ textarea {
   color: #64748b;
 }
 
+/* INQUIRY */
+.filter-bar {
+  display: flex;
+  gap: 10px;
+  margin-bottom: 20px;
+}
+
+.filter-bar input,
+.filter-bar select {
+  padding: 8px;
+}
+
+.pagination {
+  margin-top: 20px;
+  display: flex;
+  justify-content: space-between;
+}
+
+/* INQUIRY DETAIL */
+.detail-card {
+  background: white;
+  padding: 24px;
+  border-radius: 10px;
+  max-width: 800px;
+}
+
+.detail-card p {
+  margin-bottom: 10px;
+}
+
+.detail-actions {
+  margin-top: 20px;
+}
+
 /* BUTTONS */
 .btn-primary {
   display: inline-block;
-  padding: 12px 22px;
+  padding: 6px 10px;
   background: #000;
   color: #fff;
   text-decoration: none;
@@ -185,4 +219,37 @@ textarea {
 .primary-btn:hover {
   transform: translateY(-1px);
   box-shadow: 0 8px 20px rgba(234,88,12,0.3);
+}
+
+.btn-secondary {
+  display: inline-block;
+  padding: 10px 16px;
+  background: #e5e7eb;
+  color: #111;
+  text-decoration: none;
+  border-radius: 6px;
+}
+
+.btn-view {
+  padding: 6px 12px;
+  background: #2563eb;
+  color: white;
+  border-radius: 6px;
+  text-decoration: none;
+}
+
+.btn-toggle {
+  background: #16a34a;
+  color: white;
+  border: none;
+  padding: 6px 10px;
+  border-radius: 6px;
+}
+
+.btn-danger {
+  background: #dc2626;
+  color: white;
+  border: none;
+  padding: 6px 10px;
+  border-radius: 6px;
 }

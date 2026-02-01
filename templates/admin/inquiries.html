@@ -3,10 +3,34 @@
 {% block content %}
 <h1>Project Inquiries</h1>
 
+<!-- SEARCH/FILTER -->
+<form method="GET" class="filter-bar">
+
+  <input type="text"
+         name="search"
+         placeholder="Search name or email"
+         value="{{ search or '' }}">
+
+  <select name="status">
+    <option value="">All</option>
+    <option value="pending" {% if status == "pending" %}selected{% endif %}>
+      Pending
+    </option>
+    <option value="contacted" {% if status == "contacted" %}selected{% endif %}>
+      Contacted
+    </option>
+  </select>
+
+  <button type="submit">Filter</button>
+
+</form>
+
+<!-- TABLE -->
 <table class="admin-table">
   <tr>
     <th>Name</th>
     <th>Email</th>
+    <th>Plan</th>
     <th>Status</th>
     <th>Actions</th>
   </tr>
@@ -15,6 +39,7 @@
   <tr>
     <td>{{ i.full_name }}</td>
     <td>{{ i.email }}</td>
+    <td>{{ i.selected_plan }}</td>
 
     <td>
       {% if i.is_contacted %}
@@ -25,15 +50,54 @@
     </td>
 
     <td>
-      <button data-id="{{ i.id }}" class="btn-primary">View</button>
-      <button data-id="{{ i.id }}" class="btn-primary">
-        {% if i.is_contacted %}Undo{% else %}Mark Contacted{% endif %}
-      </button>
+      <a href="{{ url_for('admin_inquiry_detail', id=i.id) }}" class="btn-primary">View</a>
+      <form method="POST"
+            action="{{ url_for('toggle_inquiry_status', id=i.id) }}"
+            style="display:inline;">
+        <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+        <button type="submit" class="btn-toggle">
+          {% if i.is_contacted %}
+            Mark Pending
+          {% else %}
+            Mark Contacted
+          {% endif %}
+        </button>
+      </form>
+      <form method="POST"
+            action="{{ url_for('delete_inquiry', id=i.id) }}"
+            style="display:inline;"
+            onsubmit="return confirm('Delete this inquiry permanently?');">
+        <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+        <button type="submit" class="btn-danger">
+          Delete
+        </button>
+      </form>
+
     </td>
   </tr>
   {% endfor %}
 </table>
 
+<!-- PAGINATION -->
+{% if pagination.pages > 1 %}
+<div class="pagination">
+
+  {% if pagination.has_prev %}
+    <a href="{{ url_for('admin_inquiries', page=pagination.prev_num, search=search, status=status) }}">
+      ← Prev
+    </a>
+  {% endif %}
+
+  <span>Page {{ pagination.page }} of {{ pagination.pages }}</span>
+
+  {% if pagination.has_next %}
+    <a href="{{ url_for('admin_inquiries', page=pagination.next_num, search=search, status=status) }}">
+      Next →
+    </a>
+  {% endif %}
+
+</div>
+{% endif %}
 
 <!-- MODAL -->
 <div id="inquiryModal" class="modal">

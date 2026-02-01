@@ -41,9 +41,23 @@ class User(UserMixin, db.Model):
 
     features = db.Column(db.Text)              # comma-separated
 
+    selected_plan = db.Column(db.String(100))
+    addons = db.Column(db.Text)
+    
     timeline = db.Column(db.String(50))
     budget = db.Column(db.String(50))
     references = db.Column(db.Text)
 
     is_contacted = db.Column(db.Boolean, default=False)
     created_at = db.Column(db.DateTime, server_default=db.func.now())
+
+class AuditLog(db.Model):
+    __tablename__ = "audit_logs"
+
+    id = db.Column(db.Integer, primary_key=True)
+
+    admin_email = db.Column(db.String(120), nullable=False)
+    action = db.Column(db.String(255), nullable=False)
+    ip_address = db.Column(db.String(45))
+
+    created_at = db.Column(db.DateTime, default=datetime.utcnow)

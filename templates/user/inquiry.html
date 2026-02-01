@@ -7,6 +7,8 @@
   <link rel="stylesheet" href="{{ url_for('static', filename='css/main.css') }}">
 </head>
 <body style="background-color: rgb(188, 213, 207);">
+    {% include "components/navbar.html" %}
+    <div style="height: 100px;"></div>
 
     <section class="form-wrapper">
     <form method="POST" class="inquiry-form">
@@ -53,7 +55,15 @@
     </div>
 
     <!-- 5 -->
-    <h3>5. Timeline & Budget <span class="required">*</span></h3>
+    <h3>5. Selected Plan <span class="required">*</span></h3>
+    <input type="text"
+        name="selected_plan"
+        value="{{ selected_plan }}"
+        readonly
+        required>
+
+    <!-- 6 -->
+    <h3>6. Timeline & Budget <span class="required">*</span></h3>
     <div class="grid-2">
     <select name="timeline" required>
         <option>1–2 weeks</option>
@@ -82,7 +92,7 @@
 
     </form>
     </section>
-        {% include "components/footer.html" %}
+    {% include "components/footer.html" %}
     
     <!-- JAVASCRIPT -->
     <script src="{{ url_for('static', filename='js/main.js') }}"></script>

@@ -1,12 +1,27 @@
-<h2>{{ inquiry.full_name }}</h2>
-<p><b>Email:</b> {{ inquiry.email }}</p>
-<p><b>Phone:</b> {{ inquiry.phone }}</p>
-<p><b>Company:</b> {{ inquiry.company }}</p>
-<p><b>Project Type:</b> {{ inquiry.project_type }}</p>
-<p><b>Goals:</b> {{ inquiry.project_goals }}</p>
-<p><b>Features:</b> {{ inquiry.features }}</p>
-<p><b>Timeline:</b> {{ inquiry.timeline }}</p>
-<p><b>Budget:</b> {{ inquiry.budget }}</p>
-<p><b>References:</b> {{ inquiry.references }}</p>
+{% extends "admin/layout.html" %}
 
-<button onclick="closeModal()">Close</button>
+{% block content %}
+
+<h1>Inquiry Details</h1>
+<div class="detail-card">
+    <h2>{{ inquiry.full_name }}</h2>
+    <p><b>Email:</b> {{ inquiry.email }}</p>
+    <p><b>Phone:</b> {{ inquiry.phone }}</p>
+    <p><b>Company:</b> {{ inquiry.company }}</p>
+    <p><strong>Selected Plan:</strong> {{ inquiry.selected_plan }}</p>
+    <p><b>Project Type:</b> {{ inquiry.project_type }}</p>
+    <p><b>Goals:</b> {{ inquiry.project_goals }}</p>
+    <p><b>Features:</b> {{ inquiry.features }}</p>
+    <p><strong>Add-ons:</strong> {{ inquiry.addons or "None" }}</p>
+    <p><b>Timeline:</b> {{ inquiry.timeline }}</p>
+    <p><b>Budget:</b> {{ inquiry.budget }}</p>
+    <p><b>References:</b> {{ inquiry.references }}</p>
+</div>
+
+<div class="detail-actions">
+  <a href="{{ url_for('admin_inquiries') }}" class="btn-secondary">
+    ← Back to Inquiries
+  </a>
+</div>
+<!-- <button onclick="closeModal()">Close</button> -->
+{% endblock %}

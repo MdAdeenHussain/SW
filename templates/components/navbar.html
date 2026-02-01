@@ -1,6 +1,5 @@
 <!-- NAV -->
   <header class="navbar">
-    <header class="navbar">
     <div class="navbar-container">
 
       <!-- LOGO -->
@@ -13,6 +12,7 @@
 
       <!-- DESKTOP LINKS -->
       <nav class="nav-links">
+        <a href="{{ url_for('plans') }}">Plans</a>
         <a href="#services">Services</a>
         <a href="#portfolio">Portfolio</a>
         <a href="#contact">Contact</a>
@@ -38,6 +38,7 @@
     </div>
 
     <div class="mobile-menu-content">
+      <a href="{{ url_for('plans') }}" onclick="closeMobileMenu()">Plans</a>
       <a href="#services" onclick="closeMobileMenu()">Services</a>
       <a href="#portfolio" onclick="closeMobileMenu()">Portfolio</a>
       <a href="#contact" onclick="closeMobileMenu()">Contact</a>

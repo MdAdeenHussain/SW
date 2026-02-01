@@ -34,6 +34,12 @@ document.addEventListener("click", function (e) {
 function openInquiry(id) {
     console.log("Open inquiry", id);
     // fetch(`/admin/inquiries/${id}`)
+    fetch(`/admin/inquiry/${id}`)
+    .then(res => res.text())
+    .then(html => {
+      document.getElementById("modalContent").innerHTML = html;
+      document.getElementById("inquiryModal").style.display = "block";
+    });
 }
 
 function toggleContacted(id) {

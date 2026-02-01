@@ -3,13 +3,14 @@ from flask_sqlalchemy import SQLAlchemy
 from sqlalchemy import func, case
 from flask_login import LoginManager, login_user, logout_user, login_required, current_user
 from flask.cli import with_appcontext
+from flask_wtf.csrf import CSRFProtect, generate_csrf
 from functools import wraps
 from werkzeug.security import generate_password_hash, check_password_hash
 from dotenv import load_dotenv
 import os
 import click
 
-from model import db, Admin, User
+from model import db, Admin, AuditLog, User
 
 app = Flask(__name__)
 # 🔐 Secret key (required for sessions & login)
@@ -24,7 +25,8 @@ load_dotenv()
 ADMIN_EMAIL = os.getenv("ADMIN_EMAIL")
 ADMIN_PASSWORD = os.getenv("ADMIN_PASSWORD")
 
-
+csrf = CSRFProtect()
+csrf.init_app(app)
 db.init_app(app)
 
 # ---------- LOGIN MANAGER SETUP ----------
@@ -36,6 +38,10 @@ login_manager.login_view = "admin_login"
 def load_user(admin_id):
     return Admin.query.get(int(admin_id))
 
+@app.context_processor
+def inject_csrf_token():
+    return dict(csrf_token=generate_csrf)
+
 # ✅ Create tables
 with app.app_context():
     db.create_all()
@@ -45,10 +51,19 @@ with app.app_context():
 def home():
     return render_template("home.html")
 
+# ---------- PLANS ROUTE ---------
+@app.route("/plans")
+def plans():
+    return render_template("plans.html")
+
 # ---------- INQUIRY FORM ROUTE ----------
 @app.route("/inquiry", methods=["GET", "POST"])
 def inquiry():
+    selected_plan = request.args.get("plan", "")
+
     if request.method == "POST":
+        addons = request.form.getlist("addons")
+
         user = User(
             full_name=request.form.get("full_name"),
             email=request.form.get("email"),
@@ -60,6 +75,9 @@ def inquiry():
             project_goals=request.form.get("project_goals"),
             features=", ".join(request.form.getlist("features")),
 
+            selected_plan=request.form.get("selected_plan"),
+            addons=", ".join(addons),
+
             timeline=request.form.get("timeline"),
             budget=request.form.get("budget"),
             references=request.form.get("references")
@@ -70,7 +88,7 @@ def inquiry():
 
         return redirect(url_for("inquiry"))
 
-    return render_template("user/inquiry.html")
+    return render_template("user/inquiry.html", selected_plan=selected_plan)
 
 # ================================
 #   ADMIN ROUTES
@@ -103,6 +121,16 @@ def create_admin():
             db.session.commit()
             print("ℹ️ Admin already exists")
 
+def log_action(action):
+    if current_user.is_authenticated:
+        log = AuditLog(
+            admin_email=current_user.email,
+            action=action,
+            ip_address=request.remote_addr
+        )
+        db.session.add(log)
+        db.session.commit()
+
 def admin_required(f):
     @wraps(f)
     def decorated(*args, **kwargs):
@@ -124,6 +152,7 @@ def admin_login():
 
         if admin and admin.check_password(password):
             login_user(admin)
+            log_action("Admin logged in")
             return redirect(url_for("admin_dashboard"))
         else:
             flash("Invalid email or password", "error")
@@ -168,19 +197,55 @@ def admin_dashboard():
 @app.route("/admin/inquiries")
 @login_required
 def admin_inquiries():
-    inquiries = User.query.order_by(User.created_at.desc()).all()
-    return render_template(
-        "admin/inquiries.html",
-        inquiries=inquiries
+    # 🔍 Search & filter inputs
+    search = request.args.get("search", "")
+    status = request.args.get("status", "")
+
+    # 📄 Pagination inputs
+    page = request.args.get("page", 1, type=int)
+    per_page = 10
+
+    query = User.query
+
+    # 🔍 Search by name or email
+    if search:
+        query = query.filter(
+            (User.full_name.ilike(f"%{search}%")) |
+            (User.email.ilike(f"%{search}%"))
+        )
+
+    # 🟢 Filter by contacted status
+    if status == "contacted":
+        query = query.filter(User.is_contacted == True)
+    elif status == "pending":
+        query = query.filter(User.is_contacted == False)
+
+    # 📑 Order newest first
+    query = query.order_by(User.created_at.desc())
+
+    # 📄 Apply pagination
+    pagination = query.paginate(
+        page=page,
+        per_page=per_page,
+        error_out=False
     )
 
-@app.route("/admin/inquiry")
+    # 🎯 Render page
+    return render_template(
+        "admin/inquiries.html",
+        inquiries=pagination.items,
+        pagination=pagination,
+        search=search,
+        status=status
+    )
+
+@app.route("/admin/inquiry/<int:id>")
 @login_required
 def admin_inquiry_detail(id):
     inquiry = User.query.get_or_404(id)
-
+    log_action(f"Viewed inquiry #{id}")
     return render_template(
-        "admin/inquir_detail.html",
+        "admin/inquiry_detail.html",
         inquiry=inquiry
     )
 
@@ -190,13 +255,33 @@ def toggle_inquiry_status(id):
     inquiry = User.query.get_or_404(id)
     inquiry.is_contacted = not inquiry.is_contacted
     db.session.commit()
-    return jsonify({"success": True})
 
+    status = "Contacted" if inquiry.is_contacted else "Pending"
+    log_action(f"Marked inquiry #{id} as {status}")
+    return redirect(request.referrer or url_for("admin_inquiries"))
+    # return jsonify({"success": True})
+
+@app.route("/admin/inquiry/<int:id>/delete", methods=["POST"])
+@login_required
+def delete_inquiry(id):
+    inquiry = User.query.get_or_404(id)
+    db.session.delete(inquiry)
+    db.session.commit()
+    log_action(f"Deleted inquiry #{id}")
+    return redirect(url_for("admin_inquiries"))
+
+# ---------- ADMIN AUDIT LOG ROUTE ----------
+@app.route("/admin/audit-logs")
+@login_required
+def admin_audit_logs():
+    logs = AuditLog.query.order_by(AuditLog.created_at.desc()).limit(200).all()
+    return render_template("admin/audit_logs.html", logs=logs)
 
 # ---------- ADMIN LOGOUT ----------
 @app.route("/admin/logout")
 @login_required
 def admin_logout():
+    log_action("Admin logged out")
     logout_user()
     return redirect(url_for("admin_login"))
 

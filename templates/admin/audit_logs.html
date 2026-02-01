@@ -1,0 +1,24 @@
+{% extends "admin/layout.html" %}
+{% block content %}
+
+<h1>Audit Logs</h1>
+
+<table class="admin-table">
+  <tr>
+    <th>Admin</th>
+    <th>Action</th>
+    <th>IP</th>
+    <th>Time</th>
+  </tr>
+
+  {% for log in logs %}
+  <tr>
+    <td>{{ log.admin_email }}</td>
+    <td>{{ log.action }}</td>
+    <td>{{ log.ip_address }}</td>
+    <td>{{ log.created_at.strftime("%d %b %Y %H:%M") }}</td>
+  </tr>
+  {% endfor %}
+</table>
+
+{% endblock %}
