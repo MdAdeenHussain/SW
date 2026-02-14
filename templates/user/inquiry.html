@@ -12,7 +12,7 @@
 
     <section class="form-wrapper">
     <form method="POST" class="inquiry-form">
-
+    <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
     <h2>Project Inquiry Form</h2>
     <p>I’ll get back to you within 24 hours.</p>
 

@@ -11,6 +11,203 @@
     <div style="height: 50px;"></div>
     <div class="page-content">
 
+        <!-- HERO SECTION -->
+        <section class="hero-section">
+        <canvas id="heroParticles"></canvas>
+        <div class="depth-layer layer-1"></div>
+        <div class="depth-layer layer-2"></div>
+
+
+            <!-- Floating background blobs -->
+            <div class="hero-bg">
+                <div class="blob blob-1"></div>
+                <div class="blob blob-2"></div>
+            </div>
+
+            <div class="hero-content">
+                <h1>Building Modern Web Experiences</h1>
+                <p>We craft high-performance, scalable websites that turn ideas into powerful digital experiences. 🚀</p>
+                <a href="{{ url_for('inquiry') }}" class="hero-btn" id="heroBtn">
+                Get a Free Quote
+                </a>
+            </div>
+
+            <div class="hero-image-container" id="heroImageContainer">
+                <div class="hero-image-wrapper">
+                <img src="{{ url_for('static', filename='images/hero-image.png') }}"
+                    alt="Hero Image"
+                    class="hero-image"
+                    id="heroImage">
+                <div class="light-glow" id="lightGlow"></div>
+                </div>
+            </div>
+
+        </section>
+
+
+        <!-- TECH SCROLL -->
+        <section class="tech-scroll-section">
+
+            <h2 class="tech-title">Technologies We Work With</h2>
+
+            <div class="tech-scroll-wrapper" id="techWrapper">
+                <div class="tech-track">
+                    <div class="tech-scroll" id="techScroll">
+
+                        <div class="tech-item">
+                            <img src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/html5/html5-original.svg">
+                            <span>HTML5</span>
+                        </div>
+
+                        <div class="tech-item">
+                            <img src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/css3/css3-original.svg">
+                            <span>CSS3</span>
+                        </div>
+
+                        <div class="tech-item">
+                            <img src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/javascript/javascript-original.svg">
+                            <span>JavaScript</span>
+                        </div>
+
+                        <div class="tech-item">
+                            <img src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/python/python-original.svg">
+                            <span>Python</span>
+                        </div>
+
+                        <div class="tech-item">
+                            <img src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/flask/flask-original.svg">
+                            <span>Flask</span>
+                        </div>
+
+                        <div class="tech-item">
+                            <img src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/django/django-plain.svg">
+                            <span>Django</span>
+                        </div>
+
+                        <div class="tech-item">
+                            <img src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/sqlite/sqlite-original.svg">
+                            <span>SQLite</span>
+                        </div>
+
+                        <div class="tech-item">
+                            <img src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/react/react-original.svg">
+                            <span>React</span>
+                        </div>
+
+                        <div class="tech-item">
+                            <img src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/github/github-original.svg">
+                            <span>GitHub</span>
+                        </div>
+
+                        <div class="tech-item">
+                            <img src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/figma/figma-original.svg">
+                            <span>Figma</span>
+                        </div>
+                        
+                        <div class="tech-item">
+                            <img src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/tailwindcss/tailwindcss-original.svg">
+                            <span>Tailwind</span>
+                        </div>
+
+                        <div class="tech-item">
+                            <img src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/materialui/materialui-original.svg">
+                            <span>Material UI</span>
+                        </div>
+                    </div> 
+                </div>
+            </div>
+        </section>
+
+        <!-- ABOUT US -->
+        <section class="about-section">
+
+            <div class="about-container">
+
+                <div class="about-image">
+                <img src="{{ url_for('static', filename='images/about-image.png') }}"
+                    alt="About Us">
+                </div>
+
+                <div class="about-content">
+                <h2>Define Us</h2>
+
+                <p>
+                    We are a passionate web development team dedicated to turning ideas into powerful digital experiences. In today’s fast-moving digital world, having just a website isn’t enough — you need a platform that performs, engages, and grows with your business. That’s where we come in. We focus on building fast, secure, and scalable websites that not only look modern but also deliver real results.
+                </p>
+                <p>
+                    Our approach combines clean, user-centered design with strong backend architecture to ensure smooth performance and long-term reliability. From responsive frontends to optimized databases and seamless integrations, every project is crafted with attention to detail and future scalability in mind. We believe great development is not just about writing code — it’s about solving problems, improving user experience, and creating meaningful digital impact.
+                </p>
+                <p>
+                    Whether you’re a startup building your first online presence or a growing brand looking to upgrade your platform, we work closely with you to understand your goals and transform them into a strategic, high-performing solution. At the core of everything we do is a commitment to quality, transparency, and continuous improvement — because your growth is our success.
+                </p>
+
+                <ul class="about-highlights">
+                    <li>✔ Clean & Modern UI</li>
+                    <li>✔ Scalable Backend Architecture</li>
+                    <li>✔ Performance Optimized Code</li>
+                    <li>✔ Client-Focused Solutions</li>
+                </ul>
+
+                </div>
+
+            </div>
+
+        </section>
+
+
+        <!-- FLAG SCROLL -->
+        <section class="flag-scroll-section">
+
+            <h2 class="flag-title">We Are Serving In</h2>
+
+            <div class="flag-scroll-wrapper" id="flagWrapper">
+                <div class="flag-scroll" id="flagScroll">
+
+                <div class="flag-item">
+                    <img src="https://flagcdn.com/w80/in.png" alt="India">
+                    <span>India</span>
+                </div>
+
+                <div class="flag-item">
+                    <img src="https://flagcdn.com/w80/us.png" alt="USA">
+                    <span>USA</span>
+                </div>
+
+                <div class="flag-item">
+                    <img src="https://flagcdn.com/w80/gb.png" alt="UK">
+                    <span>UK</span>
+                </div>
+
+                <div class="flag-item">
+                    <img src="https://flagcdn.com/w80/ca.png" alt="Canada">
+                    <span>Canada</span>
+                </div>
+
+                <div class="flag-item">
+                    <img src="https://flagcdn.com/w80/au.png" alt="Australia">
+                    <span>Australia</span>
+                </div>
+
+                <div class="flag-item">
+                    <img src="https://flagcdn.com/w80/de.png" alt="Germany">
+                    <span>Germany</span>
+                </div>
+
+                <div class="flag-item">
+                    <img src="https://flagcdn.com/w80/ae.png" alt="UAE">
+                    <span>UAE</span>
+                </div>
+
+                <div class="flag-item">
+                    <img src="https://flagcdn.com/w80/sg.png" alt="Singapore">
+                    <span>Singapore</span>
+                </div>
+
+                </div>
+            </div>
+        </section>
+
+        
 
 
 
@@ -27,7 +224,6 @@
     {% include "components/footer.html" %}
 
     <!-- JAVASCRIPT -->
-    <!-- <script src="{{ url_for('static', filename='js/category.js') }}"></script> -->
     <script src="{{ url_for('static', filename='js/main.js') }}"></script>
 </body>
 </html>
