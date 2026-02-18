@@ -6,92 +6,96 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <link rel="stylesheet" href="{{ url_for('static', filename='css/main.css') }}">
 </head>
-<body style="background-color: rgb(188, 213, 207);">
+<body>
     {% include "components/navbar.html" %}
-    <div style="height: 100px;"></div>
 
-    <section class="form-wrapper">
-    <form method="POST" class="inquiry-form">
-    <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
-    <h2>Project Inquiry Form</h2>
-    <p>I’ll get back to you within 24 hours.</p>
+    <div class="inquiry-page">
+        <div style="height: 100px;"></div>
+        
+        <section class="form-wrapper">
+        <form method="POST" class="inquiry-form">
+        <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+        <h2>Project Inquiry Form</h2>
+        <p>I’ll get back to you within 24 hours.</p>
 
-    <!-- 1 -->
-    <h3>1. Basic Information <span class="required">*</span></h3>
-    <div class="grid-2">
-    <input name="full_name" placeholder="Full Name *" required>
-    <input name="email" placeholder="Email Address *" required>
-    <input name="phone" placeholder="Phone / WhatsApp" required>
-    <input name="company" placeholder="Company / Brand Name" required>
+        <!-- 1 -->
+        <h3>1. Basic Information <span class="required">*</span></h3>
+        <div class="grid-2">
+        <input name="full_name" placeholder="Full Name *" required>
+        <input name="email" placeholder="Email Address *" required>
+        <input name="phone" placeholder="Phone / WhatsApp" required>
+        <input name="company" placeholder="Company / Brand Name" required>
+        </div>
+        <input name="country_timezone" placeholder="Country / Time Zone" required>
+
+        <!-- 2 -->
+        <h3>2. Project Type <span class="required">*</span></h3>
+        <div class="checkbox-grid">
+        <label><input type="checkbox" name="project_type" value="Business Website"> Business Website</label>
+        <label><input type="checkbox" name="project_type" value="E-commerce Website"> E-commerce Website</label>
+        <label><input type="checkbox" name="project_type" value="Landing Page"> Landing Page</label>
+        <label><input type="checkbox" name="project_type" value="Portfolio Website"> Portfolio Website</label>
+        <label><input type="checkbox" name="project_type" value="Web App"> Web App</label>
+        <label><input type="checkbox" name="project_type" value="Website Redesign"> Website Redesign</label>
+        <label><input type="checkbox" name="project_type" value="Maintenance"> Maintenance / Fixes</label>
+        </div>
+
+        <!-- 3 -->
+        <h3>3. Project Goals <span class="required">*</span></h3>
+        <textarea name="project_goals" placeholder="Briefly describe the goal of your project" required></textarea>
+
+        <!-- 4 -->
+        <h3>4. Features & Requirements <span class="required">*</span></h3>
+        <div class="checkbox-grid">
+        <label><input type="checkbox" name="features" value="Responsive Design"> Responsive Design</label>
+        <label><input type="checkbox" name="features" value="Admin Dashboard"> Admin Dashboard</label>
+        <label><input type="checkbox" name="features" value="Contact Form"> Contact Form</label>
+        <label><input type="checkbox" name="features" value="Login System"> Login / Signup</label>
+        <label><input type="checkbox" name="features" value="Product Management"> Product Management</label>
+        <label><input type="checkbox" name="features" value="Blog / CMS"> Blog / CMS</label>
+        <label><input type="checkbox" name="features" value="Hosting Setup"> Hosting & Domain Setup</label>
+        <label><input type="checkbox" name="features" value="Chatbot Integration"> Chatbot Integration</label>
+        </div>
+
+        <!-- 5 -->
+        <h3>5. Selected Plan <span class="required">*</span></h3>
+        <input type="text"
+            name="selected_plan"
+            value="{{ selected_plan }}"
+            readonly
+            required>
+
+        <!-- 6 -->
+        <h3>6. Timeline & Budget <span class="required">*</span></h3>
+        <div class="grid-2">
+        <select name="timeline" required>
+            <option>1–2 weeks</option>
+            <option>2–4 weeks</option>
+            <option>1–2 months</option>
+            <option>Flexible</option>
+        </select>
+
+        <select name="budget" required>
+            <option>Under $100</option>
+            <option>$100 – $300</option>
+            <option>$300 – $700</option>
+            <option>$700+</option>
+            <option>Need guidance</option>
+        </select>
+        </div>
+
+        <textarea name="references" placeholder="Any references or specific requirements? (optional)"></textarea>
+
+        <div id="formError" class="form-error">Please fill the respective data.</div>
+        <button type="submit" class="primary-btn">
+        Submit Project Inquiry
+        </button>
+
+        <p class="form-note">You’ll receive a response within 24 hours.</p>
+
+        </form>
+        </section>
     </div>
-    <input name="country_timezone" placeholder="Country / Time Zone" required>
-
-    <!-- 2 -->
-    <h3>2. Project Type <span class="required">*</span></h3>
-    <div class="checkbox-grid">
-    <label><input type="checkbox" name="project_type" value="Business Website"> Business Website</label>
-    <label><input type="checkbox" name="project_type" value="E-commerce Website"> E-commerce Website</label>
-    <label><input type="checkbox" name="project_type" value="Landing Page"> Landing Page</label>
-    <label><input type="checkbox" name="project_type" value="Portfolio Website"> Portfolio Website</label>
-    <label><input type="checkbox" name="project_type" value="Web App"> Web App</label>
-    <label><input type="checkbox" name="project_type" value="Website Redesign"> Website Redesign</label>
-    <label><input type="checkbox" name="project_type" value="Maintenance"> Maintenance / Fixes</label>
-    </div>
-
-    <!-- 3 -->
-    <h3>3. Project Goals <span class="required">*</span></h3>
-    <textarea name="project_goals" placeholder="Briefly describe the goal of your project" required></textarea>
-
-    <!-- 4 -->
-    <h3>4. Features & Requirements <span class="required">*</span></h3>
-    <div class="checkbox-grid">
-    <label><input type="checkbox" name="features" value="Responsive Design"> Responsive Design</label>
-    <label><input type="checkbox" name="features" value="Admin Dashboard"> Admin Dashboard</label>
-    <label><input type="checkbox" name="features" value="Contact Form"> Contact Form</label>
-    <label><input type="checkbox" name="features" value="Login System"> Login / Signup</label>
-    <label><input type="checkbox" name="features" value="Product Management"> Product Management</label>
-    <label><input type="checkbox" name="features" value="Blog / CMS"> Blog / CMS</label>
-    <label><input type="checkbox" name="features" value="Hosting Setup"> Hosting & Domain Setup</label>
-    </div>
-
-    <!-- 5 -->
-    <h3>5. Selected Plan <span class="required">*</span></h3>
-    <input type="text"
-        name="selected_plan"
-        value="{{ selected_plan }}"
-        readonly
-        required>
-
-    <!-- 6 -->
-    <h3>6. Timeline & Budget <span class="required">*</span></h3>
-    <div class="grid-2">
-    <select name="timeline" required>
-        <option>1–2 weeks</option>
-        <option>2–4 weeks</option>
-        <option>1–2 months</option>
-        <option>Flexible</option>
-    </select>
-
-    <select name="budget" required>
-        <option>Under $100</option>
-        <option>$100 – $300</option>
-        <option>$300 – $700</option>
-        <option>$700+</option>
-        <option>Need guidance</option>
-    </select>
-    </div>
-
-    <textarea name="references" placeholder="Any references or specific requirements? (optional)"></textarea>
-
-    <div id="formError" class="form-error">Please fill the respective data.</div>
-    <button type="submit" class="primary-btn">
-    Submit Project Inquiry
-    </button>
-
-    <p class="form-note">You’ll receive a response within 24 hours.</p>
-
-    </form>
-    </section>
     {% include "components/footer.html" %}
     
     <!-- JAVASCRIPT -->

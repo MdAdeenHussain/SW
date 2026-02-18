@@ -17,7 +17,8 @@ app = Flask(__name__)
 app.config["SECRET_KEY"] = "dev-secret-key"
 
 # 🗄 Database config
-app.config["SQLALCHEMY_DATABASE_URI"] = "sqlite:///database.db"
+# app.config["SQLALCHEMY_DATABASE_URI"] = "sqlite:///database.db"
+app.config["SQLALCHEMY_DATABASE_URI"] = "postgresql://mohammadadeenhussain:password@localhost/spydraweb_db"
 app.config["SQLALCHEMY_TRACK_MODIFICATIONS"] = False
 
 load_dotenv()

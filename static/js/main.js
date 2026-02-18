@@ -31,6 +31,37 @@ document.addEventListener("DOMContentLoaded", function () {
 
 });
 
+// ===== GLOBAL SMOOTH SCROLL =====
+
+document.addEventListener("DOMContentLoaded", function () {
+
+  document.querySelectorAll(".scroll-link").forEach(link => {
+
+    link.addEventListener("click", function (e) {
+
+      const targetId = this.getAttribute("href");
+
+      if (targetId.startsWith("#")) {
+        e.preventDefault();
+
+        const target = document.querySelector(targetId);
+        if (!target) return;
+
+        const offset = 100; // navbar height offset
+        const targetPosition = target.getBoundingClientRect().top + window.pageYOffset - offset;
+
+        window.scrollTo({
+          top: targetPosition,
+          behavior: "smooth"
+        });
+      }
+
+    });
+
+  });
+
+});
+
 // ===== LEVEL 3 HERO INTERACTION =====
 
 document.addEventListener("DOMContentLoaded", function () {
@@ -283,6 +314,48 @@ document.addEventListener("DOMContentLoaded", function () {
   }, { threshold: 0.2 });
 
   observer.observe(aboutSection);
+
+});
+
+// ===== SERVICES TOGGLE SYSTEM =====
+
+document.addEventListener("DOMContentLoaded", function () {
+
+  const items = document.querySelectorAll(".service-item");
+  const panels = document.querySelectorAll(".service-panel");
+
+  let currentIndex = 0;
+  let autoSwitch = true;
+
+  function activateService(index) {
+
+    items.forEach(item => item.classList.remove("active"));
+    panels.forEach(panel => panel.classList.remove("active"));
+
+    items[index].classList.add("active");
+
+    const targetId = items[index].dataset.service;
+    document.getElementById(targetId).classList.add("active");
+
+    currentIndex = index;
+  }
+
+  // Manual click
+  items.forEach((item, index) => {
+    item.addEventListener("click", () => {
+      activateService(index);
+      autoSwitch = false; // stop auto toggle when clicked
+    });
+  });
+
+  // Auto toggle every 3 seconds
+  setInterval(() => {
+    if (!autoSwitch) return;
+
+    let nextIndex = (currentIndex + 1) % items.length;
+    activateService(nextIndex);
+
+  }, 3000);
 
 });
 

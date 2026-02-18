@@ -4,19 +4,15 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="{{url_for('static', filename='css/main.css')}}">
-    <title>SW</title>
+    <title>SpydraWeb | Your Budget Friendly Web Development Partner</title>
 </head>
 <body>
     {% include "components/navbar.html" %}
-    <div style="height: 50px;"></div>
     <div class="page-content">
 
         <!-- HERO SECTION -->
         <section class="hero-section">
         <canvas id="heroParticles"></canvas>
-        <div class="depth-layer layer-1"></div>
-        <div class="depth-layer layer-2"></div>
-
 
             <!-- Floating background blobs -->
             <div class="hero-bg">
@@ -41,6 +37,83 @@
                 <div class="light-glow" id="lightGlow"></div>
                 </div>
             </div>
+
+        </section>
+
+        <!-- FEATURES SECTION -->
+        <section class="feature-section">
+
+        <div class="feature-grid">
+
+            <!-- Web Design -->
+            <div class="feature-card">
+                <div class="feature-inner">
+                    <div class="feature-front">
+                        <div class="feature-icon">
+                            <img src="{{ url_for('static', filename='images/features-web_design.png') }}">
+                        </div>
+                        <h3>Web Design</h3>
+                    </div>
+                    <div class="feature-back">
+                        <p>
+                            Modern, responsive and visually stunning websites tailored to your brand.
+                        </p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- E-Commerce -->
+            <div class="feature-card">
+                <div class="feature-inner">
+                    <div class="feature-front">
+                        <div class="feature-icon">
+                            <img src="{{ url_for('static', filename='images/features-e_commerce.png') }}">
+                        </div>
+                        <h3>E-Commerce</h3>
+                    </div>
+                    <div class="feature-back">
+                        <p>
+                            Scalable online stores with payment integration and admin dashboard.
+                        </p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Cost Effective -->
+            <div class="feature-card">
+                <div class="feature-inner">
+                    <div class="feature-front">
+                        <div class="feature-icon">
+                            <img src="{{ url_for('static', filename='images/features-cost_effective.png') }}">
+                        </div>
+                        <h3>Cost Effective</h3>
+                    </div>
+                    <div class="feature-back">
+                        <p>
+                            High-performance solutions optimized for budget and long-term growth.
+                        </p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- SEO Optimized -->
+            <div class="feature-card">
+                <div class="feature-inner">
+                    <div class="feature-front">
+                        <div class="feature-icon">
+                            <img src="{{ url_for('static', filename='images/features-seo_optimized.png') }}">
+                        </div>
+                        <h3>SEO Optimized</h3>
+                    </div>
+                    <div class="feature-back">
+                        <p>
+                            Structured content and performance tuning to rank higher on search engines.
+                        </p>
+                    </div>
+                </div>
+            </div>
+
+        </div>
 
         </section>
 
@@ -90,6 +163,11 @@
                         </div>
 
                         <div class="tech-item">
+                            <img src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/postgresql/postgresql-original.svg">
+                            <span>PostgreSQL</span>
+                        </div>
+
+                        <div class="tech-item">
                             <img src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/react/react-original.svg">
                             <span>React</span>
                         </div>
@@ -119,7 +197,7 @@
         </section>
 
         <!-- ABOUT US -->
-        <section class="about-section">
+        <section class="about-section" id="about">
 
             <div class="about-container">
 
@@ -154,6 +232,226 @@
 
         </section>
 
+        <!-- SERVICES -->
+        <section class="services-section" id="services">
+
+            <h2 class="services-title">Our Services</h2>
+
+            <div class="services-container">
+
+                <!-- LEFT MENU -->
+                <div class="services-menu">
+
+                    <div class="service-item active" data-service="web">
+                        Website Development
+                    </div>
+
+                    <div class="service-item" data-service="uiux">
+                        UI/UX Design
+                    </div>
+
+                    <div class="service-item" data-service="graphic">
+                        Graphic Design
+                    </div>
+
+                    <div class="service-item" data-service="content">
+                        Content Writing
+                    </div>
+
+                </div>
+
+                <!-- RIGHT CONTENT -->
+                <div class="services-content">
+
+                <!-- WEBSITE -->
+                <div class="service-panel active" id="web">
+                    <p>We build scalable, modern web applications using:</p>
+                    <div class="tool-grid">
+                    <img src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/html5/html5-original.svg">
+                    <img src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/css3/css3-original.svg">
+                    <img src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/javascript/javascript-original.svg">
+                    <img src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/python/python-original.svg">
+                    <img src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/flask/flask-original.svg">
+                    </div>
+                </div>
+
+                <!-- UI/UX -->
+                <div class="service-panel" id="uiux">
+                    <p>Designing intuitive and engaging experiences using:</p>
+                    <div class="tool-grid">
+                    <img src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/figma/figma-original.svg">
+                    </div>
+                </div>
+
+                <!-- GRAPHIC -->
+                <div class="service-panel" id="graphic">
+                    <p>Creative visual solutions powered by:</p>
+                    <div class="tool-grid">
+                    <img src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/illustrator/illustrator-plain.svg">
+                    <img src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/photoshop/photoshop-plain.svg">
+                    </div>
+                </div>
+
+                <!-- CONTENT -->
+                <div class="service-panel" id="content">
+                    <p>SEO-driven and engaging content strategies.</p>
+                    <div class="tool-grid">
+                    <img src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/google/google-original.svg">
+                    <img src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/markdown/markdown-original.svg">
+                    </div>
+                </div>
+
+                </div>
+
+            </div>
+
+        </section>
+
+        <!-- KEY FEATURES -->
+        <section class="feature-section">
+        <h2 class="services-title">Key Features</h2>
+        <p style="margin-bottom: 16px;line-height: 1.7;color: #475569;">Our services are designed to deliver exceptional value and results.</p>
+        <div class="feature-grid">
+
+            <!-- Web Design -->
+            <div class="feature-card">
+                <div class="feature-inner">
+                    <div class="feature-front">
+                        <div class="feature-icon">
+                            <img src="{{ url_for('static', filename='images/features-web_design.png') }}">
+                        </div>
+                        <h3>Web Design</h3>
+                    </div>
+                    <div class="feature-back">
+                        <p>
+                            Modern, responsive and visually stunning websites tailored to your brand.
+                        </p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 24*7 Free Support -->
+            <div class="feature-card">
+                <div class="feature-inner">
+                    <div class="feature-front">
+                        <div class="feature-icon">
+                            <img src="{{ url_for('static', filename='images/features-free_support.png') }}">
+                        </div>
+                        <h3>24*7 Free Support</h3>
+                    </div>
+                    <div class="feature-back">
+                        <p>
+                            Round-the-clock assistance to ensure your project runs smoothly.
+                        </p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- E-Commerce -->
+            <div class="feature-card">
+                <div class="feature-inner">
+                    <div class="feature-front">
+                        <div class="feature-icon">
+                            <img src="{{ url_for('static', filename='images/features-e_commerce.png') }}">
+                        </div>
+                        <h3>E-Commerce</h3>
+                    </div>
+                    <div class="feature-back">
+                        <p>
+                            Scalable online stores with payment integration and admin dashboard.
+                        </p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Web Development -->
+            <div class="feature-card">
+                <div class="feature-inner">
+                    <div class="feature-front">
+                        <div class="feature-icon">
+                            <img src="{{ url_for('static', filename='images/features-web_development.png') }}">
+                        </div>
+                        <h3>Web Development</h3>
+                    </div>
+                    <div class="feature-back">
+                        <p>
+                            Custom-built websites and web applications with modern technologies.
+                        </p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Cost Effective -->
+            <div class="feature-card">
+                <div class="feature-inner">
+                    <div class="feature-front">
+                        <div class="feature-icon">
+                            <img src="{{ url_for('static', filename='images/features-cost_effective.png') }}">
+                        </div>
+                        <h3>Cost Effective</h3>
+                    </div>
+                    <div class="feature-back">
+                        <p>
+                            High-performance solutions optimized for budget and long-term growth.
+                        </p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 100% Responsive Website -->
+            <div class="feature-card">
+                <div class="feature-inner">
+                    <div class="feature-front">
+                        <div class="feature-icon">
+                            <img src="{{ url_for('static', filename='images/features-responsive.png') }}">
+                        </div>
+                        <h3>100% Responsive Website</h3>
+                    </div>
+                    <div class="feature-back">
+                        <p>
+                            Websites that look and function perfectly on all devices.
+                        </p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Content Writing -->
+            <div class="feature-card">
+                <div class="feature-inner">
+                    <div class="feature-front">
+                        <div class="feature-icon">
+                            <img src="{{ url_for('static', filename='images/features-content_writing.png') }}">
+                        </div>
+                        <h3>Content Writing</h3>
+                    </div>
+                    <div class="feature-back">
+                        <p>
+                            Engaging and SEO-optimized content tailored to your audience.
+                        </p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- SEO Optimized -->
+            <div class="feature-card">
+                <div class="feature-inner">
+                    <div class="feature-front">
+                        <div class="feature-icon">
+                            <img src="{{ url_for('static', filename='images/features-seo_optimized.png') }}">
+                        </div>
+                        <h3>SEO Optimized</h3>
+                    </div>
+                    <div class="feature-back">
+                        <p>
+                            Structured content and performance tuning to rank higher on search engines.
+                        </p>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+
+        </section>
 
         <!-- FLAG SCROLL -->
         <section class="flag-scroll-section">

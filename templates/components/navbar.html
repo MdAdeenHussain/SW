@@ -13,7 +13,8 @@
       <!-- DESKTOP LINKS -->
       <nav class="nav-links">
         <a href="{{ url_for('plans') }}">Plans</a>
-        <a href="#services">Services</a>
+        <a href="#about" class="scroll-link">About Us</a>
+        <a href="#services" class="scroll-link">Services</a>
         <a href="#portfolio">Portfolio</a>
         <a href="#contact">Contact</a>
       </nav>
@@ -39,7 +40,8 @@
 
     <div class="mobile-menu-content">
       <a href="{{ url_for('plans') }}" onclick="closeMobileMenu()">Plans</a>
-      <a href="#services" onclick="closeMobileMenu()">Services</a>
+      <a href="#about" class="scroll-link" onclick="closeMobileMenu()">About Us</a>
+      <a href="#services" class="scroll-link" onclick="closeMobileMenu()">Services</a>
       <a href="#portfolio" onclick="closeMobileMenu()">Portfolio</a>
       <a href="#contact" onclick="closeMobileMenu()">Contact</a>
     </div>

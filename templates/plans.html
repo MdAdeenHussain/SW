@@ -11,14 +11,17 @@
 <!-- ADD NAVBAR -->
 {% include "components/navbar.html" %}
 
-<div style="height:50px;"></div>
 <div class="page-content">
   <section class="plans-section">
 
-    <h1 class="plans-title">Plans & Pricing</h1>
-    <p class="plans-subtitle">
-      Simple, transparent pricing. Choose what fits your needs.
-    </p>
+    <section class="plans-header">
+      <div style="height: 100px;"></div>
+    
+      <h1 class="plans-title">Plans & Pricing</h1>
+      <p class="plans-subtitle">
+        Simple, transparent pricing. Choose what fits your needs.
+      </p>
+    </section>
 
     <!-- PLANS GRID -->
     <div class="plans-grid">
@@ -26,7 +29,7 @@
       <!-- BASIC -->
       <div class="plan-card">
         <h3>Basic</h3>
-        <p class="price">₹4,999</p>
+        <p class="price">₹8,999</p>
 
         <ul>
           <li>1–3 Pages Website</li>
@@ -45,7 +48,7 @@
       <div class="plan-card featured" id="recommended-plan">
         <span class="badge">Most Popular</span>
         <h3>Standard</h3>
-        <p class="price">₹9,999</p>
+        <p class="price">₹14,999</p>
 
         <ul>
           <li>5–8 Pages Website</li>
@@ -63,7 +66,7 @@
       <!-- PREMIUM -->
       <div class="plan-card">
         <h3>Premium</h3>
-        <p class="price">₹19,999+</p>
+        <p class="price">₹24,999+</p>
 
         <ul>
           <li>Unlimited Pages</li>
@@ -76,31 +79,6 @@
         <a href="{{ url_for('inquiry', plan='Premium') }}" class="plan-btn">
           Get Started
         </a>
-      </div>
-
-    
-      <div class="plan-card">
-        <h3>Add-ons (Optional)</h3>
-
-        <label>
-          <input type="checkbox" name="addons" value="SEO Optimization">
-          SEO Optimization
-        </label>
-
-        <label>
-          <input type="checkbox" name="addons" value="Chatbot Integration">
-          Chatbot Integration
-        </label>
-
-        <label>
-          <input type="checkbox" name="addons" value="E-Commerce Setup">
-          E-Commerce Setup
-        </label>
-
-        <label>
-          <input type="checkbox" name="addons" value="Admin Dashboard">
-          Admin Dashboard
-        </label>
       </div>
 
     </div>
