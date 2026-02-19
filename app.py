@@ -10,7 +10,7 @@ from dotenv import load_dotenv
 import os
 import click
 
-from model import db, Admin, AuditLog, User
+from model import db, Admin, AuditLog, User, Blog, Category, Tag
 
 app = Flask(__name__)
 # 🔐 Secret key (required for sessions & login)
@@ -29,6 +29,10 @@ ADMIN_PASSWORD = os.getenv("ADMIN_PASSWORD")
 csrf = CSRFProtect()
 csrf.init_app(app)
 db.init_app(app)
+
+# ================================
+#   HOME ROUTES
+# ================================
 
 # ---------- LOGIN MANAGER SETUP ----------
 login_manager = LoginManager()
@@ -90,6 +94,52 @@ def inquiry():
         return redirect(url_for("inquiry"))
 
     return render_template("user/inquiry.html", selected_plan=selected_plan)
+
+# ---------- BLOG ROUTES ----------
+
+@app.route("/blogs")
+def blogs():
+
+    page = request.args.get("page", 1, type=int)
+    search = request.args.get("search", "")
+    category = request.args.get("category")
+
+    query = Blog.query.order_by(Blog.created_at.desc())
+
+    if search:
+        query = query.filter(
+            Blog.title.ilike(f"%{search}%")
+        )
+
+    if category:
+        query = query.join(Category).filter(
+            Category.name == category
+        )
+
+    pagination = query.paginate(page=page, per_page=6)
+
+    return render_template(
+        "blogs.html",
+        blogs=pagination.items,
+        pagination=pagination,
+        search=search
+    )
+
+@app.route("/blogs/<slug>")
+def blog_detail(slug):
+
+    blog = Blog.query.filter_by(slug=slug).first_or_404()
+
+    related = Blog.query.filter(
+        Blog.category_id == blog.category_id,
+        Blog.id != blog.id
+    ).limit(3).all()
+
+    return render_template(
+        "blog_detail.html",
+        blog=blog,
+        related=related
+    )
 
 # ================================
 #   ADMIN ROUTES
@@ -277,6 +327,66 @@ def delete_inquiry(id):
 def admin_audit_logs():
     logs = AuditLog.query.order_by(AuditLog.created_at.desc()).limit(200).all()
     return render_template("admin/audit_logs.html", logs=logs)
+
+# --------- ADMIN BLOG MANAGEMENT ROUTE ----------
+@app.route("/admin/blogs")
+@admin_required   # or your login_required decorator
+def admin_blogs():
+    blogs = Blog.query.order_by(Blog.created_at.desc()).all()
+    return render_template("admin/blogs.html", blogs=blogs)
+
+
+@app.route("/admin/blog/create", methods=["GET", "POST"])
+@admin_required
+def create_blog():
+    if request.method == "POST":
+
+        blog = Blog(
+            title=request.form.get("title"),
+            short_description=request.form.get("short_description"),
+            content=request.form.get("content"),
+            image_url=request.form.get("image_url")
+        )
+
+        blog.generate_slug()
+
+        db.session.add(blog)
+        db.session.commit()
+
+        return redirect(url_for("admin_blogs"))
+
+    return render_template("admin/create_blog.html")
+
+@app.route("/admin/blog/edit/<int:blog_id>", methods=["GET", "POST"])
+@admin_required  # or your login decorator
+def edit_blog(blog_id):
+
+    blog = Blog.query.get_or_404(blog_id)
+
+    if request.method == "POST":
+        blog.title = request.form.get("title")
+        blog.short_description = request.form.get("short_description")
+        blog.content = request.form.get("content")
+        blog.image_url = request.form.get("image_url")
+
+        blog.generate_slug()
+
+        db.session.commit()
+
+        return redirect(url_for("admin_blogs"))
+
+    return render_template("admin/edit_blog.html", blog=blog)
+
+@app.route("/admin/blog/delete/<int:blog_id>", methods=["POST"])
+@admin_required
+def delete_blog(blog_id):
+
+    blog = Blog.query.get_or_404(blog_id)
+
+    db.session.delete(blog)
+    db.session.commit()
+
+    return redirect(url_for("admin_blogs"))
 
 # ---------- ADMIN LOGOUT ----------
 @app.route("/admin/logout")
