@@ -4,13 +4,15 @@ from sqlalchemy import func, case
 from flask_login import LoginManager, login_user, logout_user, login_required, current_user
 from flask.cli import with_appcontext
 from flask_wtf.csrf import CSRFProtect, generate_csrf
+from flask_migrate import Migrate
 from functools import wraps
 from werkzeug.security import generate_password_hash, check_password_hash
 from dotenv import load_dotenv
+from datetime import datetime, timedelta
 import os
 import click
 
-from model import db, Admin, AuditLog, User, Blog, Category, Tag
+from model import db, Admin, AuditLog, User, Blog, Category, Tag, BlogVersion
 
 app = Flask(__name__)
 # 🔐 Secret key (required for sessions & login)
@@ -26,6 +28,7 @@ load_dotenv()
 ADMIN_EMAIL = os.getenv("ADMIN_EMAIL")
 ADMIN_PASSWORD = os.getenv("ADMIN_PASSWORD")
 
+migrate = Migrate(app, db)
 csrf = CSRFProtect()
 csrf.init_app(app)
 db.init_app(app)
@@ -116,7 +119,11 @@ def blogs():
             Category.name == category
         )
 
-    pagination = query.paginate(page=page, per_page=6)
+    pagination = Blog.query.filter_by(
+        is_published=True
+    ).order_by(
+        Blog.published_at.desc()
+    ).paginate(page=page, per_page=6)
 
     return render_template(
         "blogs.html",
@@ -128,13 +135,17 @@ def blogs():
 @app.route("/blogs/<slug>")
 def blog_detail(slug):
 
-    blog = Blog.query.filter_by(slug=slug).first_or_404()
+    blog = Blog.query.filter_by(slug=slug, is_published=True).first_or_404()
 
     related = Blog.query.filter(
         Blog.category_id == blog.category_id,
-        Blog.id != blog.id
+        Blog.id != blog.id,
+        Blog.is_published == True
     ).limit(3).all()
 
+    blog.views += 1
+    db.session.commit()
+    
     return render_template(
         "blog_detail.html",
         blog=blog,
@@ -239,9 +250,35 @@ def change_admin_credentials():
 @login_required
 def admin_dashboard():
     inquiries_count = User.query.count()
+
+    total_blogs = Blog.query.count()
+
+    published = Blog.query.filter_by(status="published").count()
+
+    drafts = Blog.query.filter_by(status="draft").count()
+
+    total_views = db.session.query(
+        db.func.sum(Blog.views)
+    ).scalar() or 0
+
+    # seo_score = Blog.query.with_entities(
+    #     func.avg(
+    #         case(
+    #             [
+    #                 (Blog.content.ilike("%seo%"), 10)
+    #             ],
+    #             else_=5
+    #         )
+    #     )
+    # ).scalar() or 0
     return render_template(
         "admin/dashboard.html",
-        inquiries_count=inquiries_count
+        inquiries_count=inquiries_count,
+        total_blogs=total_blogs,
+        published=published,
+        drafts=drafts,
+        total_views=total_views
+        # seo_score=round(seo_score, 2)
     )
 
 # ---------- ADMIN INQUIRY ----------
@@ -345,7 +382,8 @@ def create_blog():
             title=request.form.get("title"),
             short_description=request.form.get("short_description"),
             content=request.form.get("content"),
-            image_url=request.form.get("image_url")
+            image_url=request.form.get("image_url"),
+            is_published=False
         )
 
         blog.generate_slug()
@@ -371,19 +409,45 @@ def edit_blog(blog_id):
 
         blog.generate_slug()
 
+        # Save old version
+        version = BlogVersion(
+            blog_id=blog.id,
+            title=blog.title,
+            content=blog.content
+        )
+
+        db.session.add(version)
         db.session.commit()
 
         return redirect(url_for("admin_blogs"))
 
     return render_template("admin/edit_blog.html", blog=blog)
 
+@app.route("/admin/blog/toggle/<int:blog_id>", methods=["POST"])
+@admin_required
+def toggle_blog_status(blog_id):
+
+    # blog = Blog.query.get_or_404(blog_id)
+
+    # auto publish scheduled blogs
+    blog = Blog.query.filter(
+        Blog.status == "scheduled",
+        Blog.scheduled_at <= datetime.utcnow()
+    ).update({
+        "status": "published"
+    })
+
+    db.session.commit()
+
+    return redirect(url_for("admin_blogs"))
+
 @app.route("/admin/blog/delete/<int:blog_id>", methods=["POST"])
 @admin_required
 def delete_blog(blog_id):
 
-    blog = Blog.query.get_or_404(blog_id)
+    blog = Blog.query.filter(Blog.deleted_at.is_(None)).filter_by(id=blog_id).first_or_404()
 
-    db.session.delete(blog)
+    blog.deleted_at = datetime.utcnow()
     db.session.commit()
 
     return redirect(url_for("admin_blogs"))

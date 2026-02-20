@@ -11,6 +11,7 @@
     <th>Title</th>
     <th>Date</th>
     <th>Actions</th>
+    <th>Status</th>
   </tr>
 
   {% for blog in blogs %}
@@ -31,10 +32,30 @@
                 onclick="return confirm('Delete this blog?')" class="btn-danger">
           Delete
         </button>
+      </form>
 
+      <form action="{{ url_for('toggle_blog_status', blog_id=blog.id) }}"
+            method="POST"
+            style="display:inline;">
+
+        <input type="hidden"
+              name="csrf_token"
+              value="{{ csrf_token() }}">
+
+        {% if blog.is_published %}
+          <button type="submit">Unpublish</button>
+        {% else %}
+          <button type="submit">Publish</button>
+        {% endif %}
       </form>
     </td>
-
+    <td>
+      {% if blog.is_published %}
+        <span style="color:green;">Published</span>
+      {% else %}
+        <span style="color:orange;">Draft</span>
+      {% endif %}
+    </td>
   </tr>
   {% endfor %}
 

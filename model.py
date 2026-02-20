@@ -20,8 +20,16 @@ class Admin(UserMixin, db.Model):
     email_verified = db.Column(db.Boolean, default=False)
     phone_verified = db.Column(db.Boolean, default=False)
 
+    role = db.Column(
+        db.String(20),
+        default="writer"  # superadmin, editor, writer
+    )
+
     is_admin = db.Column(db.Boolean, default=False)
     is_active = db.Column(db.Boolean, default=True)
+
+    created_at = db.Column(db.DateTime, default=datetime.utcnow)
+    blogs = db.relationship("Blog", backref="author", lazy=True)
 
     def check_password(self, raw_password):
         return check_password_hash(self.password_hash, raw_password)
@@ -79,6 +87,8 @@ class Blog(db.Model):
     short_description = db.Column(db.String(300), nullable=False)
     content = db.Column(db.Text, nullable=False)
 
+    views = db.Column(db.Integer, default=0)
+
     image_url = db.Column(db.String(500), nullable=True)
     # 🔥 FOREIGN KEY MUST MATCH TABLENAME
     category_id = db.Column(
@@ -99,14 +109,47 @@ class Blog(db.Model):
         secondary=blog_tags,
         backref=db.backref("blogs", lazy="dynamic")
     )
+
+    author_id = db.Column(
+        db.Integer,
+        db.ForeignKey("admins.id")
+    )
     created_at = db.Column(db.DateTime, default=datetime.utcnow)
 
+    status = db.Column(
+        db.String(20),
+        default="draft"  # draft, pending, approved, scheduled, published
+    )
+
+    scheduled_at = db.Column(db.DateTime, nullable=True)
+    deleted_at = db.Column(db.DateTime, nullable=True)  # soft delete
+    
     def generate_slug(self):
         self.slug = slugify(self.title)
 
     def reading_time(self):
         words = len(self.content.split())
         return max(1, words // 200)
+
+    def seo_score(self):
+        score = 0
+
+        if len(self.title) > 30:
+            score += 20
+
+        if len(self.short_description) > 100:
+            score += 20
+
+        if "<h2>" in self.content:
+            score += 20
+
+        if len(self.content.split()) > 300:
+            score += 20
+
+        if self.image_url:
+            score += 20
+
+        return score
 
 class Category(db.Model):
     __tablename__ = "categories"
@@ -119,3 +162,22 @@ class Tag(db.Model):
 
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String(50), unique=True, nullable=False)
+
+class BlogVersion(db.Model):
+    __tablename__ = "blog_versions"
+
+    id = db.Column(db.Integer, primary_key=True)
+
+    blog_id = db.Column(
+        db.Integer,
+        db.ForeignKey("blogs.id"),
+        nullable=False
+    )
+
+    title = db.Column(db.String(200))
+    content = db.Column(db.Text)
+
+    edited_at = db.Column(
+        db.DateTime,
+        default=datetime.utcnow
+    )
