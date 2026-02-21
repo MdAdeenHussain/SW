@@ -21,7 +21,18 @@ load_dotenv()
 app.config["SECRET_KEY"] = os.getenv("SECRET_KEY")
 
 # 🗄 Database config
-app.config["SQLALCHEMY_DATABASE_URI"] = os.getenv("DATABASE_URL")
+database_url = (os.getenv("DATABASE_URL") or "").strip()
+
+# Render and some providers may still expose postgres:// URLs.
+if database_url.startswith("postgres://"):
+    database_url = database_url.replace("postgres://", "postgresql://", 1)
+
+# External Render PostgreSQL requires SSL.
+if database_url and "render.com" in database_url and "sslmode=" not in database_url:
+    separator = "&" if "?" in database_url else "?"
+    database_url = f"{database_url}{separator}sslmode=require"
+
+app.config["SQLALCHEMY_DATABASE_URI"] = database_url
 app.config["SQLALCHEMY_TRACK_MODIFICATIONS"] = False
 
 ADMIN_EMAIL = os.getenv("ADMIN_EMAIL")
