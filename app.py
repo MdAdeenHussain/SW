@@ -51,9 +51,12 @@ def load_user(admin_id):
 def inject_csrf_token():
     return dict(csrf_token=generate_csrf)
 
-# ✅ Create tables
+# ✅ Create tables (safe startup: do not fail app import if DB is unreachable)
 with app.app_context():
-    db.create_all()
+    try:
+        db.create_all()
+    except Exception as exc:
+        app.logger.warning("Skipping db.create_all() during startup: %s", exc)
 
 # ---------- HOME ROUTE ----------
 @app.route("/")
@@ -464,6 +467,9 @@ def admin_logout():
 # ---------------- RUN THE APP ----------------
 if __name__ == "__main__":    #---------------- Always be at the end of the file ----------------
     with app.app_context():
-        db.create_all()
+        try:
+            db.create_all()
+        except Exception as exc:
+            app.logger.warning("Skipping db.create_all() before app.run(): %s", exc)
         # create_admin()
     app.run(debug=True)
