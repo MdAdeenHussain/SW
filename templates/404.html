@@ -1,0 +1,480 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <title>404 | Page Not Found</title>
+    <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            min-height: 100vh;
+            font-family: "Nunito", sans-serif;
+            background: linear-gradient(rgb(0, 119, 255), rgb(221, 240, 251) );
+            position: relative;
+            overflow: hidden;
+            color: #1b2238;
+        }
+
+        .logo {
+            position: fixed;
+            top: 8px;
+            left: 10px;
+            z-index: 6;
+        }
+
+        .logo a {
+            text-decoration: none;
+            display: inline-block;
+        }
+
+        .logo-img {
+            width: 260px;
+            height: auto;
+            display: block;
+        }
+
+        .theme-toggle {
+            position: fixed;
+            top: 18px;
+            right: 18px;
+            z-index: 8;
+            margin-top: 0;
+            display: inline-flex;
+            align-items: center;
+            gap: 10px;
+            border: 1px solid #cbd5e1;
+            border-radius: 999px;
+            background: rgba(255, 255, 255, 0.72);
+            color: #0f172a;
+            padding: 7px 10px;
+            cursor: pointer;
+            backdrop-filter: blur(8px);
+        }
+
+        .theme-icon {
+            font-size: 16px;
+            line-height: 1;
+        }
+
+        .theme-track {
+            width: 46px;
+            height: 24px;
+            background: #dbeafe;
+            border-radius: 999px;
+            position: relative;
+            transition: background 0.25s ease;
+        }
+
+        .theme-thumb {
+            width: 18px;
+            height: 18px;
+            background: #ffffff;
+            border-radius: 50%;
+            position: absolute;
+            top: 3px;
+            left: 3px;
+            box-shadow: 0 2px 6px rgba(15, 23, 42, 0.25);
+            transition: transform 0.25s ease;
+        }
+
+        .theme-toggle.active .theme-track {
+            background: #334155;
+        }
+
+        .theme-toggle.active .theme-thumb {
+            transform: translateX(22px);
+        }
+
+        .theme-toggle.active .sun {
+            opacity: 0.4;
+        }
+
+        .theme-toggle:not(.active) .moon {
+            opacity: 0.4;
+        }
+
+        .page-wrap {
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 70px 16px 30px;
+            position: relative;
+        }
+
+        .error-container {
+            text-align: center;
+            width: min(980px, 100%);
+            position: relative;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        .moving-cloud-bg {
+            position: absolute;
+            inset: 0;
+            z-index: 2;
+            pointer-events: none;
+            opacity: 0.2;
+            background-image: url("{{ url_for('static', filename='images/404-background-cloud.png') }}");
+            background-repeat: repeat-x;
+            background-size: auto 120%;
+            background-position: -2200px 0;
+            animation: moveCloudBg 70s linear infinite;
+        }
+
+        .day-sky {
+            position: absolute;
+            inset: 0;
+            z-index: 0;
+            pointer-events: none;
+            opacity: 1;
+            transition: opacity 0.35s ease;
+        }
+
+        .sun-orb {
+            position: absolute;
+            top: 25%;
+            left: 70%;
+            transform: translate(-50%, -50%);
+            width: clamp(70px, 10vw, 120px);
+            aspect-ratio: 1 / 1;
+            border-radius: 50%;
+            background: radial-gradient(circle at 35% 35%, #fff9c4 0%, #fde047 45%, #f59e0b 100%);
+            box-shadow:
+                0 0 30px rgba(245, 158, 11, 0.45),
+                0 0 60px rgba(250, 204, 21, 0.26);
+            animation: sunPulse 4.5s ease-in-out infinite;
+        }
+
+        .sun-orb::before {
+            content: "";
+            position: absolute;
+            inset: -20%;
+            border-radius: 50%;
+            background: conic-gradient(
+                from 0deg,
+                rgba(255, 255, 255, 0.0),
+                rgba(255, 255, 255, 0.45),
+                rgba(255, 255, 255, 0.0)
+            );
+            animation: sunRotate 12s linear infinite;
+            filter: blur(0.3px);
+            opacity: 0.55;
+        }
+
+        .night-sky {
+            position: absolute;
+            inset: 0;
+            z-index: 3;
+            pointer-events: none;
+            opacity: 0;
+            transition: opacity 0.35s ease;
+        }
+
+        .moon-orb {
+            position: absolute;
+            top: 16%;
+            right: 16%;
+            width: clamp(56px, 8vw, 92px);
+            aspect-ratio: 1 / 1;
+            border-radius: 50%;
+            background: radial-gradient(circle at 30% 30%, #fef9c3 0%, #e2e8f0 65%, #94a3b8 100%);
+            box-shadow: 0 0 30px rgba(226, 232, 240, 0.28);
+        }
+
+        .moon-orb::after {
+            content: "";
+            position: absolute;
+            top: 9%;
+            left: 26%;
+            width: 22%;
+            height: 22%;
+            border-radius: 50%;
+            background: rgba(148, 163, 184, 0.42);
+        }
+
+        .star {
+            position: absolute;
+            width: 5px;
+            aspect-ratio: 1 / 1;
+            border-radius: 50%;
+            background: #e2e8f0;
+            box-shadow: 0 0 8px rgba(226, 232, 240, 0.6);
+            animation: twinkle 3.2s ease-in-out infinite;
+        }
+
+        .star.s1 { top: 12%; left: 12%; animation-delay: 0.2s; }
+        .star.s2 { top: 22%; left: 24%; animation-delay: 1s; }
+        .star.s3 { top: 9%; left: 38%; animation-delay: 0.6s; }
+        .star.s4 { top: 18%; left: 56%; animation-delay: 1.5s; }
+        .star.s5 { top: 10%; left: 70%; animation-delay: 2.2s; }
+        .star.s6 { top: 30%; left: 80%; animation-delay: 0.9s; }
+        .star.s7 { top: 36%; left: 20%; animation-delay: 2.8s; }
+        .star.s8 { top: 42%; left: 64%; animation-delay: 1.9s; }
+
+        @keyframes twinkle {
+            0%, 100% {
+                opacity: 0.25;
+                transform: scale(1);
+            }
+            50% {
+                opacity: 1;
+                transform: scale(1.25);
+            }
+        }
+
+        @keyframes sunPulse {
+            0%, 100% {
+                transform: translate(-50%, -50%) scale(1);
+            }
+            50% {
+                transform: translate(-50%, -50%) scale(1.06);
+            }
+        }
+
+        @keyframes sunRotate {
+            from {
+                transform: rotate(0deg);
+            }
+            to {
+                transform: rotate(360deg);
+            }
+        }
+
+        @keyframes moveCloudBg {
+            from {
+                background-position: -2200px 0;
+            }
+            to {
+                background-position: 0 0;
+            }
+        }
+
+        .error-code {
+            font-size: clamp(13rem, 68vw, 44rem);
+            line-height: 0.72;
+            color: rgba(255, 255, 255, 0.88);
+            letter-spacing: 0.02em;
+            user-select: none;
+            position: relative;
+            z-index: 1;
+            margin: 0;
+            width: 100%;
+            min-height: clamp(260px, 56vh, 620px);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+        }
+
+        .error-message {
+            margin-top: 0;
+            font-size: clamp(2.2rem, 4.6vw, 3.5rem);
+            font-weight: 700;
+            color: #1f2740;
+            position: relative;
+            z-index: 5;
+        }
+
+        .sub-message {
+            margin-top: 8px;
+            font-size: clamp(1rem, 2.4vw, 1.35rem);
+            color: #4a5675;
+            position: relative;
+            z-index: 5;
+        }
+
+        .home-btn {
+            display: inline-block;
+            margin-top: 26px;
+            padding: 12px 28px;
+            border-radius: 12px;
+            text-decoration: none;
+            background: #ffffff;
+            color: #1f2740;
+            font-weight: 600;
+            border: 1px solid rgba(23, 34, 68, 0.18);
+            box-shadow: 0 8px 18px rgba(25, 40, 70, 0.12);
+            transition: transform 0.2s ease, box-shadow 0.2s ease, background-color 0.2s ease;
+            position: relative;
+            z-index: 5;
+        }
+
+        .home-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 24px rgba(25, 40, 70, 0.18);
+            background: #f6f8ff;
+        }
+
+        body.dark-mode {
+            background: linear-gradient(180deg, #020617 0%, #0b1324 45%, #111827 100%);
+            color: #e2e8f0;
+        }
+
+        body.dark-mode .moving-cloud-bg {
+            opacity: 0.14;
+        }
+
+        body.dark-mode .day-sky {
+            opacity: 0;
+        }
+
+        body.dark-mode .night-sky {
+            opacity: 1;
+        }
+
+        body.dark-mode .error-code {
+            color: rgba(226, 232, 240, 0.22);
+        }
+
+        body.dark-mode .error-message {
+            color: #e2e8f0;
+        }
+
+        body.dark-mode .sub-message {
+            color: #94a3b8;
+        }
+
+        body.dark-mode .home-btn {
+            background: #17243b;
+            color: #e2e8f0;
+            border-color: #2f3f5b;
+            box-shadow: 0 10px 24px rgba(2, 6, 23, 0.35);
+        }
+
+        body.dark-mode .home-btn:hover {
+            background: #20314d;
+        }
+
+        body.dark-mode .theme-toggle {
+            border-color: #334155;
+            color: #e2e8f0;
+            background: rgba(15, 23, 42, 0.72);
+        }
+
+        body.dark-mode .theme-track {
+            background: #1e293b;
+        }
+
+        body.dark-mode .theme-toggle.active .theme-track {
+            background: #38bdf8;
+        }
+
+        @media (max-width: 768px) {
+            .logo {
+                top: 6px;
+                left: 8px;
+            }
+
+            .logo-img {
+                width: 200px;
+            }
+
+            .theme-toggle {
+                top: 10px;
+                right: 10px;
+            }
+
+            .moon-orb {
+                top: 18%;
+                right: 10%;
+            }
+
+            .sun-orb {
+                top: 30%;
+                left: 50%;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="logo">
+        <a href="{{ url_for('home') }}">
+          <img src="{{ url_for('static', filename='images/spydraweb-logo.png') }}" class="logo-img" alt="SpydraWeb">
+        </a>
+    </div>
+
+    <button id="themeToggle" class="theme-toggle" type="button" aria-label="Toggle dark mode" aria-pressed="false">
+        <span class="theme-icon sun" aria-hidden="true">&#9728;</span>
+        <span class="theme-track">
+            <span class="theme-thumb"></span>
+        </span>
+        <span class="theme-icon moon" aria-hidden="true">&#9790;</span>
+    </button>
+
+    <div class="moving-cloud-bg" aria-hidden="true"></div>
+    <div class="day-sky" aria-hidden="true">
+        <span class="sun-orb"></span>
+    </div>
+    <div class="night-sky" aria-hidden="true">
+        <span class="moon-orb"></span>
+        <span class="star s1"></span>
+        <span class="star s2"></span>
+        <span class="star s3"></span>
+        <span class="star s4"></span>
+        <span class="star s5"></span>
+        <span class="star s6"></span>
+        <span class="star s7"></span>
+        <span class="star s8"></span>
+    </div>
+
+    <div class="page-wrap">
+        <main class="error-container">
+            <h1 class="error-code">404</h1>
+
+            <p class="error-message">Oops, I think we're lost...</p>
+            <p class="sub-message">Let's get you back to somewhere familiar.</p>
+            <a class="home-btn" href="{{ url_for('home') }}">Back Home</a>
+        </main>
+    </div>
+
+    <script>
+        (function () {
+            const storageKey = "spydra_theme";
+            const themeToggle = document.getElementById("themeToggle");
+
+            function getSavedTheme() {
+                try {
+                    return localStorage.getItem(storageKey);
+                } catch (error) {
+                    return null;
+                }
+            }
+
+            function saveTheme(theme) {
+                try {
+                    localStorage.setItem(storageKey, theme);
+                } catch (error) {
+                    // no-op
+                }
+            }
+
+            function applyTheme(theme) {
+                const isDark = theme === "dark";
+                document.body.classList.toggle("dark-mode", isDark);
+                themeToggle.classList.toggle("active", isDark);
+                themeToggle.setAttribute("aria-pressed", String(isDark));
+            }
+
+            const initialTheme = getSavedTheme() === "dark" ? "dark" : "light";
+            applyTheme(initialTheme);
+
+            themeToggle.addEventListener("click", function () {
+                const nextTheme = document.body.classList.contains("dark-mode") ? "light" : "dark";
+                applyTheme(nextTheme);
+                saveTheme(nextTheme);
+            });
+        })();
+    </script>
+</body>
+</html>

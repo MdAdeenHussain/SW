@@ -3,7 +3,15 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;500;600;700;800&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="{{url_for('static', filename='css/main.css')}}">
+    <style>
+        body {
+            font-family: "Nunito", sans-serif;
+        }
+    </style>
     <title>SpydraWeb | Your Budget Friendly Web Development Partner</title>
 </head>
 <body>
@@ -272,6 +280,8 @@
                     <img src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/javascript/javascript-original.svg">
                     <img src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/python/python-original.svg">
                     <img src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/flask/flask-original.svg">
+                    <img src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/django/django-plain.svg">
+                    <img src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/postgresql/postgresql-original.svg">
                     </div>
                 </div>
 
@@ -505,22 +515,187 @@
             </div>
         </section>
 
+        <!-- TESTIMONIALS -->
+        <section class="testimonials-section">
+            <div class="testimonials-header">
+                <h2>What Clients Say</h2>
+                <p>
+                    Real feedback from business owners and teams we have worked with.
+                </p>
+            </div>
+
+            <div class="testimonials-grid">
+                {% if testimonial_reviews %}
+                    {% for review in testimonial_reviews %}
+                    <article class="testimonial-card">
+                        <p class="testimonial-quote">
+                            "{{ review.message }}"
+                        </p>
+                        <div class="testimonial-meta">
+                            <strong>{{ review.name }}</strong>
+                            <span>{{ review.email }}</span>
+                        </div>
+                        <div class="testimonial-rating">
+                            {% for _ in range(review.rating) %}&#9733;{% endfor %}
+                        </div>
+                    </article>
+                    {% endfor %}
+                {% else %}
+                    <article class="testimonial-card">
+                        <p class="testimonial-quote">
+                            "SpydraWeb turned our idea into a polished business site in less than two weeks.
+                            The communication was clear, and every small detail was handled professionally."
+                        </p>
+                        <div class="testimonial-meta">
+                            <strong>Rohan S.</strong>
+                            <span>Founder, Local Retail Brand</span>
+                        </div>
+                        <div class="testimonial-rating">&#9733;&#9733;&#9733;&#9733;&#9733;</div>
+                    </article>
+
+                    <article class="testimonial-card">
+                        <p class="testimonial-quote">
+                            "The new website feels faster, cleaner, and easier for our customers to use.
+                            We started receiving better quality leads within the first month."
+                        </p>
+                        <div class="testimonial-meta">
+                            <strong>Emily T.</strong>
+                            <span>Marketing Manager, Service Company</span>
+                        </div>
+                        <div class="testimonial-rating">&#9733;&#9733;&#9733;&#9733;&#9733;</div>
+                    </article>
+
+                    <article class="testimonial-card">
+                        <p class="testimonial-quote">
+                            "From design to deployment, the process was smooth and transparent.
+                            Their team delivered exactly what we needed without overcomplicating anything."
+                        </p>
+                        <div class="testimonial-meta">
+                            <strong>Arjun M.</strong>
+                            <span>Co-Founder, Startup Team</span>
+                        </div>
+                        <div class="testimonial-rating">&#9733;&#9733;&#9733;&#9733;&#9733;</div>
+                    </article>
+                {% endif %}
+            </div>
+        </section>
+
+        <!-- CONTACT SECTION -->
+        <section id="contact" class="contact-section">
+            <div class="contact-wrapper">
+                <div class="contact-card">
+                    <canvas id="contactParticles" aria-hidden="true"></canvas>
+
+                    <h2>Submit Your Query</h2>
+                    <p>Have a project in mind? Let’s build something great together.</p>
+
+                    <form id="contactForm" method="POST">
+
+                    <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+
+                    <div class="contact-form-row">
+                        <div class="form-group">
+                            <input type="text" name="name" placeholder="Full Name" required>
+                        </div>
+                        <div class="form-group">
+                            <input type="email" name="email" placeholder="Email Address" required>
+                        </div>
+                    </div>
+
+                    <div class="contact-form-row">
+                        <div class="form-group">
+                            <input type="tel" name="phone" placeholder="Phone Number" required>
+                        </div>
+                        <div class="form-group">
+                            <input type="text" name="subject" placeholder="Subject" required>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <textarea name="message" rows="5"
+                                placeholder="Your Message..."
+                                required></textarea>
+                    </div>
+
+                    <!-- Google reCAPTCHA -->
+                    <div class="g-recaptcha"
+                        data-sitekey="6Lf7n3IsAAAAAH2W4PymZByeF7cH1e_-kQnEmWUf"></div>
+
+                    <button type="submit" class="contact-btn">
+                        Send Message
+                    </button>
+
+                    </form>
+
+                </div>
+                <div class="contact-image">
+                    <h2>Contact Us</h2>
+                    <h3 style="color: #475569; font-size: 14px;">Get in touch with our team</h3>
+                    <img src="{{ url_for('static', filename='images/contact-illustration.png') }}"
+                        alt="Contact Illustration">
+                </div>
+            </div>
+        </section>
+
+        <!-- FAQ SECTION -->
+        <section id="faq" class="faq-section">
+            <div class="faq-header">
+                <h2>Frequently Asked Questions</h2>
+                <p>Quick answers to common questions about our process, pricing, and support.</p>
+            </div>
+
+            <div class="faq-list">
+                <details class="faq-item">
+                    <summary>How long does a typical website project take?</summary>
+                    <p>Most standard business websites are delivered within 1 to 4 weeks depending on scope, revisions, and content readiness.</p>
+                </details>
+
+                <details class="faq-item">
+                    <summary>Do you provide domain and hosting support?</summary>
+                    <p>Yes. We can help you choose, set up, and configure your domain and hosting so your website goes live smoothly.</p>
+                </details>
+
+                <details class="faq-item">
+                    <summary>Can I request changes after the project is completed?</summary>
+                    <p>Yes. We offer post-launch support and update packages for design tweaks, content edits, and feature enhancements.</p>
+                </details>
+
+                <details class="faq-item">
+                    <summary>Will my website be mobile responsive?</summary>
+                    <p>Absolutely. Every website we build is optimized to work properly across phones, tablets, and desktops.</p>
+                </details>
+
+                <details class="faq-item">
+                    <summary>Do you build e-commerce websites?</summary>
+                    <p>Yes. We build scalable e-commerce websites with product management, checkout flows, and payment integration.</p>
+                </details>
+
+                <details class="faq-item">
+                    <summary>How do payments work for a project?</summary>
+                    <p>Payment is usually split into milestones: an initial advance, a middle checkpoint, and a final payment before launch.</p>
+                </details>
+
+                <details class="faq-item">
+                    <summary>Will my website be SEO-friendly?</summary>
+                    <p>Yes. We follow SEO basics such as clean structure, optimized metadata, responsive performance, and readable content layout.</p>
+                </details>
+
+                <details class="faq-item">
+                    <summary>Can you redesign my existing website?</summary>
+                    <p>Yes. We can modernize your current website by improving design, speed, usability, and overall conversion experience.</p>
+                </details>
+            </div>
+        </section>
 
 
 
-
-
-
-
-
-
-
-
-        
     </div>
     {% include "components/footer.html" %}
 
     <!-- JAVASCRIPT -->
     <script src="{{ url_for('static', filename='js/main.js') }}"></script>
+    <!-- Google reCAPTCHA Script -->
+    <script src="https://www.google.com/recaptcha/api.js" async defer></script>
+
 </body>
 </html>

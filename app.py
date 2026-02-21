@@ -1,6 +1,5 @@
 from flask import Flask, render_template, request, redirect, flash, request, url_for, session, current_app, jsonify
 from flask_sqlalchemy import SQLAlchemy
-from sqlalchemy import func, case
 from flask_login import LoginManager, login_user, logout_user, login_required, current_user
 from flask.cli import with_appcontext
 from flask_wtf.csrf import CSRFProtect, generate_csrf
@@ -8,11 +7,12 @@ from flask_migrate import Migrate
 from functools import wraps
 from werkzeug.security import generate_password_hash, check_password_hash
 from dotenv import load_dotenv
-from datetime import datetime, timedelta
+from datetime import timedelta
 import os
 import click
+import requests
 
-from model import db, Admin, AuditLog, User, Blog, Category, Tag, BlogVersion
+from model import db, Admin, AuditLog, User, ContactMessage, Review
 
 app = Flask(__name__)
 # 🔐 Secret key (required for sessions & login)
@@ -27,6 +27,8 @@ load_dotenv()
 
 ADMIN_EMAIL = os.getenv("ADMIN_EMAIL")
 ADMIN_PASSWORD = os.getenv("ADMIN_PASSWORD")
+RECAPTCHA_SITE_KEY = "6Lf7n3IsAAAAAH2W4PymZByeF7cH1e_-kQnEmWUf"
+RECAPTCHA_SECRET_KEY = "6Lf7n3IsAAAAAFCXgT130VpKLjaAu28hF4W7CwIw"
 
 migrate = Migrate(app, db)
 csrf = CSRFProtect()
@@ -57,12 +59,81 @@ with app.app_context():
 # ---------- HOME ROUTE ----------
 @app.route("/")
 def home():
-    return render_template("home.html")
+    testimonial_reviews = Review.query.filter(
+        Review.rating > 4
+    ).order_by(
+        Review.created_at.desc()
+    ).limit(6).all()
+
+    return render_template(
+        "home.html",
+        testimonial_reviews=testimonial_reviews
+    )
+
+@app.route("/404")
+def custom_404_page():
+    return render_template("404.html"), 404
+
+@app.errorhandler(404)
+def page_not_found(error):
+    return render_template("404.html"), 404
 
 # ---------- PLANS ROUTE ---------
 @app.route("/plans")
 def plans():
     return render_template("plans.html")
+
+# ---------- REVIEW ROUTE ----------
+@app.route("/review", methods=["GET", "POST"])
+def review_page():
+    if request.method == "POST":
+        recaptcha_response = request.form.get("g-recaptcha-response")
+
+        verify_url = "https://www.google.com/recaptcha/api/siteverify"
+
+        response = requests.post(
+            verify_url,
+            data={
+                "secret": RECAPTCHA_SECRET_KEY,
+                "response": recaptcha_response
+            }
+        )
+
+        result = response.json()
+
+        if not result.get("success"):
+            flash("Please verify that you are not a robot.", "error")
+            return redirect(url_for("review_page"))
+
+        name = request.form.get("name", "").strip()
+        email = request.form.get("email", "").strip()
+        message = request.form.get("message", "").strip()
+        rating = request.form.get("rating", type=int)
+
+        if not name or not email or not message or rating is None:
+            flash("Please fill all review fields.", "error")
+            return redirect(url_for("review_page"))
+
+        if rating < 1 or rating > 5:
+            flash("Rating must be between 1 and 5.", "error")
+            return redirect(url_for("review_page"))
+
+        new_review = Review(
+            name=name,
+            email=email,
+            rating=rating,
+            message=message
+        )
+
+        db.session.add(new_review)
+        db.session.commit()
+        flash("Thank you for your review!", "success")
+        return redirect(url_for("review_page"))
+
+    return render_template(
+        "legals/review.html",
+        recaptcha_site_key=RECAPTCHA_SITE_KEY
+    )
 
 # ---------- INQUIRY FORM ROUTE ----------
 @app.route("/inquiry", methods=["GET", "POST"])
@@ -98,59 +169,67 @@ def inquiry():
 
     return render_template("user/inquiry.html", selected_plan=selected_plan)
 
-# ---------- BLOG ROUTES ----------
+# ---------- CONTACT ROUTE ----------
+@app.route("/contact", methods=["POST"])
+def contact():
 
-@app.route("/blogs")
-def blogs():
+    recaptcha_response = request.form.get("g-recaptcha-response")
 
-    page = request.args.get("page", 1, type=int)
-    search = request.args.get("search", "")
-    category = request.args.get("category")
+    verify_url = "https://www.google.com/recaptcha/api/siteverify"
 
-    query = Blog.query.order_by(Blog.created_at.desc())
-
-    if search:
-        query = query.filter(
-            Blog.title.ilike(f"%{search}%")
-        )
-
-    if category:
-        query = query.join(Category).filter(
-            Category.name == category
-        )
-
-    pagination = Blog.query.filter_by(
-        is_published=True
-    ).order_by(
-        Blog.published_at.desc()
-    ).paginate(page=page, per_page=6)
-
-    return render_template(
-        "blogs.html",
-        blogs=pagination.items,
-        pagination=pagination,
-        search=search
+    response = requests.post(
+        verify_url,
+        data={
+            "secret": RECAPTCHA_SECRET_KEY,
+            "response": recaptcha_response
+        }
     )
 
-@app.route("/blogs/<slug>")
-def blog_detail(slug):
+    result = response.json()
 
-    blog = Blog.query.filter_by(slug=slug, is_published=True).first_or_404()
+    if not result.get("success"):
+        flash("Please verify that you are not a robot.")
+        return redirect(url_for("home"))
 
-    related = Blog.query.filter(
-        Blog.category_id == blog.category_id,
-        Blog.id != blog.id,
-        Blog.is_published == True
-    ).limit(3).all()
+    # Process form (store in DB or send email)
 
-    blog.views += 1
+    name = request.form.get("name")
+    email = request.form.get("email")
+    phone = request.form.get("phone")
+    subject = request.form.get("subject")
+    message = request.form.get("message")
+
+    # Save to database
+    new_message = ContactMessage(
+        name=name,
+        email=email,
+        phone=phone,
+        subject=subject,
+        message=message
+    )
+
+    db.session.add(new_message)
     db.session.commit()
-    
-    return render_template(
-        "blog_detail.html",
-        blog=blog,
-        related=related
-    )
+
+    return jsonify({"status": "success"})
+
+    # flash("Message sent successfully!")
+    # return redirect(url_for("home"))
+
+# ---------- PRIVACY POLICY ROUTE ----------
+@app.route("/privacy")
+def privacy():
+    return render_template("legals/privacy.html")
+
+# ---------- TERMS & CONDITIONS ROUTE ----------
+@app.route("/terms")
+def terms():
+    return render_template("legals/terms.html")
+
+# ---------- REFUND & CANCELLATION POLICY ROUTE ----------
+@app.route("/refund_policy")
+def refund_policy():
+    return render_template("refund.html")
 
 # ================================
 #   ADMIN ROUTES
@@ -251,34 +330,9 @@ def change_admin_credentials():
 def admin_dashboard():
     inquiries_count = User.query.count()
 
-    total_blogs = Blog.query.count()
-
-    published = Blog.query.filter_by(status="published").count()
-
-    drafts = Blog.query.filter_by(status="draft").count()
-
-    total_views = db.session.query(
-        db.func.sum(Blog.views)
-    ).scalar() or 0
-
-    # seo_score = Blog.query.with_entities(
-    #     func.avg(
-    #         case(
-    #             [
-    #                 (Blog.content.ilike("%seo%"), 10)
-    #             ],
-    #             else_=5
-    #         )
-    #     )
-    # ).scalar() or 0
     return render_template(
         "admin/dashboard.html",
-        inquiries_count=inquiries_count,
-        total_blogs=total_blogs,
-        published=published,
-        drafts=drafts,
-        total_views=total_views
-        # seo_score=round(seo_score, 2)
+        inquiries_count=inquiries_count
     )
 
 # ---------- ADMIN INQUIRY ----------
@@ -358,99 +412,33 @@ def delete_inquiry(id):
     log_action(f"Deleted inquiry #{id}")
     return redirect(url_for("admin_inquiries"))
 
+# ---------- ADMIN CONTACT MESSAGES ----------
+@app.route("/admin/contact-messages")
+@admin_required
+def admin_contact_messages():
+
+    messages = ContactMessage.query.order_by(
+        ContactMessage.created_at.desc()
+    ).all()
+
+    return render_template(
+        "admin/contact_messages.html",
+        messages=messages
+    )
+
+# ---------- ADMIN REVIEWS ----------
+@app.route("/admin/reviews")
+@admin_required
+def admin_reviews():
+    reviews = Review.query.order_by(Review.created_at.desc()).all()
+    return render_template("admin/reviews.html", reviews=reviews)
+
 # ---------- ADMIN AUDIT LOG ROUTE ----------
 @app.route("/admin/audit-logs")
 @login_required
 def admin_audit_logs():
     logs = AuditLog.query.order_by(AuditLog.created_at.desc()).limit(200).all()
     return render_template("admin/audit_logs.html", logs=logs)
-
-# --------- ADMIN BLOG MANAGEMENT ROUTE ----------
-@app.route("/admin/blogs")
-@admin_required   # or your login_required decorator
-def admin_blogs():
-    blogs = Blog.query.order_by(Blog.created_at.desc()).all()
-    return render_template("admin/blogs.html", blogs=blogs)
-
-
-@app.route("/admin/blog/create", methods=["GET", "POST"])
-@admin_required
-def create_blog():
-    if request.method == "POST":
-
-        blog = Blog(
-            title=request.form.get("title"),
-            short_description=request.form.get("short_description"),
-            content=request.form.get("content"),
-            image_url=request.form.get("image_url"),
-            is_published=False
-        )
-
-        blog.generate_slug()
-
-        db.session.add(blog)
-        db.session.commit()
-
-        return redirect(url_for("admin_blogs"))
-
-    return render_template("admin/create_blog.html")
-
-@app.route("/admin/blog/edit/<int:blog_id>", methods=["GET", "POST"])
-@admin_required  # or your login decorator
-def edit_blog(blog_id):
-
-    blog = Blog.query.get_or_404(blog_id)
-
-    if request.method == "POST":
-        blog.title = request.form.get("title")
-        blog.short_description = request.form.get("short_description")
-        blog.content = request.form.get("content")
-        blog.image_url = request.form.get("image_url")
-
-        blog.generate_slug()
-
-        # Save old version
-        version = BlogVersion(
-            blog_id=blog.id,
-            title=blog.title,
-            content=blog.content
-        )
-
-        db.session.add(version)
-        db.session.commit()
-
-        return redirect(url_for("admin_blogs"))
-
-    return render_template("admin/edit_blog.html", blog=blog)
-
-@app.route("/admin/blog/toggle/<int:blog_id>", methods=["POST"])
-@admin_required
-def toggle_blog_status(blog_id):
-
-    # blog = Blog.query.get_or_404(blog_id)
-
-    # auto publish scheduled blogs
-    blog = Blog.query.filter(
-        Blog.status == "scheduled",
-        Blog.scheduled_at <= datetime.utcnow()
-    ).update({
-        "status": "published"
-    })
-
-    db.session.commit()
-
-    return redirect(url_for("admin_blogs"))
-
-@app.route("/admin/blog/delete/<int:blog_id>", methods=["POST"])
-@admin_required
-def delete_blog(blog_id):
-
-    blog = Blog.query.filter(Blog.deleted_at.is_(None)).filter_by(id=blog_id).first_or_404()
-
-    blog.deleted_at = datetime.utcnow()
-    db.session.commit()
-
-    return redirect(url_for("admin_blogs"))
 
 # ---------- ADMIN LOGOUT ----------
 @app.route("/admin/logout")

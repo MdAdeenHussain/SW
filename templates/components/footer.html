@@ -33,19 +33,33 @@
       <ul>
         <li><a href="#about" class="scroll-link">About Us</a></li>
         <li><a href="#services" class="scroll-link">Services</a></li>
-        <li><a href="{{ url_for('blogs') }}">Blogs</a></li>
+        <li><a href="#faq" class="scroll-link">FAQ</a></li>
+        <li><a href="{{ url_for('review_page') }}">Review</a></li>
         <li><a href="#contact" class="scroll-link">Contact Us</a></li>
         <li><a href="#careers" class="scroll-link">Careers</a></li>
       </ul>
+    </div>
+
+    <!-- THEME TOGGLE -->
+    <div class="footer-col">
+      <h3>Theme</h3>
+      <p>Switch between light and dark mode.</p>
+      <button id="themeToggle" class="theme-toggle" type="button" aria-label="Toggle dark mode" aria-pressed="false">
+        <span class="theme-icon sun" aria-hidden="true">&#9728;</span>
+        <span class="theme-track">
+          <span class="theme-thumb"></span>
+        </span>
+        <span class="theme-icon moon" aria-hidden="true">&#9790;</span>
+      </button>
     </div>
 
     <!-- POLICIES -->
     <div class="footer-col">
       <h3>Policies</h3>
       <ul>
-        <li><a href="#">Privacy Policy</a></li>
-        <li><a href="#">Terms & Conditions</a></li>
-        <li><a href="#">Cookie Policy</a></li>
+        <li><a href="{{ url_for('privacy') }}">Privacy Policy</a></li>
+        <li><a href="{{ url_for('terms') }}">Terms & Conditions</a></li>
+        <li><a href="{{ url_for('refund_policy') }}">Refund & Cancellation Policy</a></li>
       </ul>
     </div>
 
@@ -56,3 +70,13 @@
     © 2026 SpydraWeb. All rights reserved.
   </div>
 </footer>
+
+<!-- WHATSAPP FLOATING BUTTON -->
+<a
+  href="https://wa.me/919674667587"
+  target="_blank"
+  rel="noopener noreferrer"
+  class="whatsapp-btn"
+  aria-label="Chat on WhatsApp">
+  <i class="fab fa-whatsapp"></i>
+</a>

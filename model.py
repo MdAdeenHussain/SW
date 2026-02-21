@@ -1,8 +1,7 @@
 from flask_sqlalchemy import SQLAlchemy
 from flask_login import UserMixin
 from werkzeug.security import generate_password_hash, check_password_hash
-from slugify import slugify
-from datetime import datetime, timedelta
+from datetime import datetime
 
 db = SQLAlchemy()
 
@@ -29,7 +28,6 @@ class Admin(UserMixin, db.Model):
     is_active = db.Column(db.Boolean, default=True)
 
     created_at = db.Column(db.DateTime, default=datetime.utcnow)
-    blogs = db.relationship("Blog", backref="author", lazy=True)
 
     def check_password(self, raw_password):
         return check_password_hash(self.password_hash, raw_password)
@@ -60,6 +58,30 @@ class User(UserMixin, db.Model):
     is_contacted = db.Column(db.Boolean, default=False)
     created_at = db.Column(db.DateTime, server_default=db.func.now())
 
+class ContactMessage(db.Model):
+    __tablename__ = "contact_messages"
+
+    id = db.Column(db.Integer, primary_key=True)
+
+    name = db.Column(db.String(100), nullable=False)
+    email = db.Column(db.String(150), nullable=False)
+    phone = db.Column(db.String(20), nullable=False)
+    subject = db.Column(db.String(200), nullable=False)
+    message = db.Column(db.Text, nullable=False)
+
+    created_at = db.Column(db.DateTime, default=datetime.utcnow)
+    is_read = db.Column(db.Boolean, default=False)
+
+class Review(db.Model):
+    __tablename__ = "reviews"
+
+    id = db.Column(db.Integer, primary_key=True)
+    name = db.Column(db.String(100), nullable=False)
+    email = db.Column(db.String(150), nullable=False)
+    rating = db.Column(db.Integer, nullable=False)
+    message = db.Column(db.Text, nullable=False)
+    created_at = db.Column(db.DateTime, default=datetime.utcnow)
+
 class AuditLog(db.Model):
     __tablename__ = "audit_logs"
 
@@ -70,114 +92,3 @@ class AuditLog(db.Model):
     ip_address = db.Column(db.String(45))
 
     created_at = db.Column(db.DateTime, default=datetime.utcnow)
-
-blog_tags = db.Table('blog_tags',
-    db.Column('blog_id', db.Integer, db.ForeignKey('blogs.id')),
-    db.Column('tag_id', db.Integer, db.ForeignKey('tags.id'))
-    )
-
-class Blog(db.Model):
-    __tablename__ = "blogs"
-
-    id = db.Column(db.Integer, primary_key=True)
-
-    title = db.Column(db.String(200), nullable=False)
-    slug = db.Column(db.String(200), unique=True, nullable=False)
-
-    short_description = db.Column(db.String(300), nullable=False)
-    content = db.Column(db.Text, nullable=False)
-
-    views = db.Column(db.Integer, default=0)
-
-    image_url = db.Column(db.String(500), nullable=True)
-    # 🔥 FOREIGN KEY MUST MATCH TABLENAME
-    category_id = db.Column(
-        db.Integer,
-        db.ForeignKey("categories.id"),
-        nullable=True
-    )
-
-    # 🔥 RELATIONSHIP (DEFINE HERE)
-    category = db.relationship(
-        "Category",
-        backref=db.backref("blogs", lazy=True)
-    )
-
-    # 🔥 MANY TO MANY TAGS
-    tags = db.relationship(
-        "Tag",
-        secondary=blog_tags,
-        backref=db.backref("blogs", lazy="dynamic")
-    )
-
-    author_id = db.Column(
-        db.Integer,
-        db.ForeignKey("admins.id")
-    )
-    created_at = db.Column(db.DateTime, default=datetime.utcnow)
-
-    status = db.Column(
-        db.String(20),
-        default="draft"  # draft, pending, approved, scheduled, published
-    )
-
-    scheduled_at = db.Column(db.DateTime, nullable=True)
-    deleted_at = db.Column(db.DateTime, nullable=True)  # soft delete
-    
-    def generate_slug(self):
-        self.slug = slugify(self.title)
-
-    def reading_time(self):
-        words = len(self.content.split())
-        return max(1, words // 200)
-
-    def seo_score(self):
-        score = 0
-
-        if len(self.title) > 30:
-            score += 20
-
-        if len(self.short_description) > 100:
-            score += 20
-
-        if "<h2>" in self.content:
-            score += 20
-
-        if len(self.content.split()) > 300:
-            score += 20
-
-        if self.image_url:
-            score += 20
-
-        return score
-
-class Category(db.Model):
-    __tablename__ = "categories"
-
-    id = db.Column(db.Integer, primary_key=True)
-    name = db.Column(db.String(100), unique=True, nullable=False)
-
-class Tag(db.Model):
-    __tablename__ = "tags"
-
-    id = db.Column(db.Integer, primary_key=True)
-    name = db.Column(db.String(50), unique=True, nullable=False)
-
-class BlogVersion(db.Model):
-    __tablename__ = "blog_versions"
-
-    id = db.Column(db.Integer, primary_key=True)
-
-    blog_id = db.Column(
-        db.Integer,
-        db.ForeignKey("blogs.id"),
-        nullable=False
-    )
-
-    title = db.Column(db.String(200))
-    content = db.Column(db.Text)
-
-    edited_at = db.Column(
-        db.DateTime,
-        default=datetime.utcnow
-    )

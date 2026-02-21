@@ -4,20 +4,19 @@
 
       <!-- LOGO -->
       <div class="logo">
-        <a href="/">
-          <!-- <img src="/static/images/HyperFitLogo.jpeg" class="logo-img" alt="Logo"> -->
-          <h1>SpydraWeb</h1>
+        <a href="{{ url_for('home') }}">
+          <img src="{{ url_for('static', filename='images/spydraweb-logo.png') }}" class="logo-img" alt="SpydraWeb">
         </a>
       </div>
 
       <!-- DESKTOP LINKS -->
       <nav class="nav-links">
         <a href="{{ url_for('plans') }}">Plans</a>
-        <a href="{{ url_for('blogs') }}">Blogs</a>
         <a href="#about" class="scroll-link">About Us</a>
         <a href="#services" class="scroll-link">Services</a>
+        <a href="#faq" class="scroll-link">FAQ</a>
         <a href="#portfolio">Portfolio</a>
-        <a href="#contact">Contact</a>
+        <a href="#contact" class="scroll-link">Contact</a>
       </nav>
 
       <!-- RIGHT ACTIONS -->
@@ -41,10 +40,10 @@
 
     <div class="mobile-menu-content">
       <a href="{{ url_for('plans') }}" onclick="closeMobileMenu()">Plans</a>
-      <a href="{{ url_for('blogs') }}" onclick="closeMobileMenu()">Blogs</a>
       <a href="#about" class="scroll-link" onclick="closeMobileMenu()">About Us</a>
       <a href="#services" class="scroll-link" onclick="closeMobileMenu()">Services</a>
+      <a href="#faq" class="scroll-link" onclick="closeMobileMenu()">FAQ</a>
       <a href="#portfolio" onclick="closeMobileMenu()">Portfolio</a>
-      <a href="#contact" onclick="closeMobileMenu()">Contact</a>
+      <a href="#contact" class="scroll-link" onclick="closeMobileMenu()">Contact</a>
     </div>
   </div>

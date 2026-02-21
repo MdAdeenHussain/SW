@@ -1,0 +1,26 @@
+{% extends "admin/layout.html" %}
+
+{% block content %}
+<h1>Client Reviews</h1>
+
+{% if reviews %}
+<div class="reviews-grid">
+  {% for review in reviews %}
+  <article class="review-admin-card">
+    <div class="review-admin-top">
+      <h3>{{ review.name }}</h3>
+      <span class="review-admin-rating">{{ review.rating }}/5</span>
+    </div>
+
+    <p class="review-admin-email">{{ review.email }}</p>
+    <p class="review-admin-message">{{ review.message }}</p>
+    <p class="review-admin-date">
+      {{ review.created_at.strftime('%d %b %Y, %I:%M %p') if review.created_at else '' }}
+    </p>
+  </article>
+  {% endfor %}
+</div>
+{% else %}
+<p>No reviews submitted yet.</p>
+{% endif %}
+{% endblock %}

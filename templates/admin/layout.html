@@ -15,7 +15,8 @@
     <nav>
       <a href="{{ url_for('admin_dashboard') }}">Dashboard</a>
       <a href="{{ url_for('admin_inquiries') }}">Inquiries</a>
-      <a href="{{ url_for('admin_blogs') }}">Blogs</a>
+      <a href="{{ url_for('admin_contact_messages') }}">Contact Messages</a>
+      <a href="{{ url_for('admin_reviews') }}">Reviews</a>
       <a href="{{ url_for('admin_audit_logs') }}">Audit Logs</a>
       <a href="{{ url_for('change_admin_credentials') }}">Change Credentials</a>
       <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">

@@ -31,6 +31,88 @@ document.addEventListener("DOMContentLoaded", function () {
 
 });
 
+// ===== THEME TOGGLE =====
+document.addEventListener("DOMContentLoaded", function () {
+
+  const storageKey = "spydra_theme";
+  const themeToggle = document.getElementById("themeToggle");
+  const themeImageSelectors = [
+    ".hero-image",
+    ".feature-icon img",
+    ".about-image img",
+    ".contact-image img"
+  ];
+
+  function getThemeImageSources(image) {
+    const rawSrc = image.getAttribute("src");
+    if (!rawSrc || !/\.png(\?.*)?$/i.test(rawSrc)) return null;
+
+    const lightSrc = image.dataset.lightSrc || rawSrc.replace(/-dark(?=\.png(\?.*)?$)/i, "");
+    if (!/\.png(\?.*)?$/i.test(lightSrc)) return null;
+
+    const darkSrc = image.dataset.darkSrc || lightSrc.replace(/(?=\.png(\?.*)?$)/i, "-dark");
+    image.dataset.lightSrc = lightSrc;
+    image.dataset.darkSrc = darkSrc;
+
+    return { lightSrc, darkSrc };
+  }
+
+  function applyThemeImages(isDark) {
+    document.querySelectorAll(themeImageSelectors.join(", ")).forEach(image => {
+      const sources = getThemeImageSources(image);
+      if (!sources) return;
+
+      const nextSrc = isDark ? sources.darkSrc : sources.lightSrc;
+      if (image.getAttribute("src") !== nextSrc) {
+        image.setAttribute("src", nextSrc);
+      }
+    });
+  }
+
+  function getSavedTheme() {
+    try {
+      return localStorage.getItem(storageKey);
+    } catch (error) {
+      return null;
+    }
+  }
+
+  function saveTheme(theme) {
+    try {
+      localStorage.setItem(storageKey, theme);
+    } catch (error) {
+      // no-op
+    }
+  }
+
+  function applyTheme(theme) {
+    const isDark = theme === "dark";
+    document.body.classList.toggle("dark-mode", isDark);
+    applyThemeImages(isDark);
+
+    if (themeToggle) {
+      themeToggle.classList.toggle("active", isDark);
+      themeToggle.setAttribute("aria-pressed", String(isDark));
+    }
+  }
+
+  const savedTheme = getSavedTheme();
+  const initialTheme = savedTheme === "dark" ? "dark" : "light";
+  applyTheme(initialTheme);
+
+  if (!themeToggle) return;
+
+  themeToggle.addEventListener("click", function () {
+    const nextTheme = document.body.classList.contains("dark-mode")
+      ? "light"
+      : "dark";
+
+    applyTheme(nextTheme);
+    saveTheme(nextTheme);
+  });
+
+});
+
 // ===== GLOBAL SMOOTH SCROLL =====
 
 document.addEventListener("DOMContentLoaded", function () {
@@ -259,6 +341,103 @@ window.addEventListener("load", () => {
 
 });
 
+// ===== CONTACT CARD PARTICLES =====
+document.addEventListener("DOMContentLoaded", function () {
+
+  const canvas = document.getElementById("contactParticles");
+  if (!canvas) return;
+
+  const card = canvas.closest(".contact-card");
+  if (!card) return;
+
+  const ctx = canvas.getContext("2d");
+  const particles = [];
+  const count = window.innerWidth < 900 ? 22 : 40;
+  let width = 0;
+  let height = 0;
+
+  function resize() {
+    width = card.clientWidth;
+    height = card.clientHeight;
+    canvas.width = width;
+    canvas.height = height;
+  }
+
+  window.addEventListener("resize", resize);
+  resize();
+
+  class ContactParticle {
+    constructor(y) {
+      this.reset(y);
+    }
+
+    reset(y) {
+      this.x = Math.random() * width;
+      this.y = y !== undefined ? y : height + Math.random() * 36;
+      this.radius = Math.random() * 2 + 1;
+      this.speed = Math.random() * 0.45 + 0.2;
+      this.drift = (Math.random() - 0.5) * 0.25;
+      this.alpha = Math.random() * 0.35 + 0.1;
+    }
+
+    update() {
+      this.y -= this.speed;
+      this.x += this.drift;
+
+      if (this.y < -12 || this.x < -12 || this.x > width + 12) {
+        this.reset();
+      }
+    }
+
+    draw() {
+      ctx.beginPath();
+      ctx.arc(this.x, this.y, this.radius, 0, Math.PI * 2);
+      ctx.fillStyle = `rgba(255, 255, 255, ${this.alpha})`;
+      ctx.fill();
+    }
+  }
+
+  for (let i = 0; i < count; i++) {
+    particles.push(new ContactParticle(Math.random() * height));
+  }
+
+  function connectParticles() {
+    const maxDistance = 72;
+
+    for (let a = 0; a < particles.length; a++) {
+      for (let b = a + 1; b < particles.length; b++) {
+        const dx = particles[a].x - particles[b].x;
+        const dy = particles[a].y - particles[b].y;
+        const distance = Math.sqrt(dx * dx + dy * dy);
+
+        if (distance < maxDistance) {
+          const lineOpacity = (1 - distance / maxDistance) * 0.14;
+          ctx.strokeStyle = `rgba(255, 255, 255, ${lineOpacity})`;
+          ctx.lineWidth = 1;
+          ctx.beginPath();
+          ctx.moveTo(particles[a].x, particles[a].y);
+          ctx.lineTo(particles[b].x, particles[b].y);
+          ctx.stroke();
+        }
+      }
+    }
+  }
+
+  function animate() {
+    ctx.clearRect(0, 0, width, height);
+
+    particles.forEach(particle => {
+      particle.update();
+      particle.draw();
+    });
+
+    connectParticles();
+    requestAnimationFrame(animate);
+  }
+
+  animate();
+});
+
 // ===== TECH/FLAG SCROLL =====
 document.addEventListener("DOMContentLoaded", function () {
 
@@ -429,6 +608,40 @@ document.addEventListener("DOMContentLoaded", () => {
   observer.observe(plan);
 });
 
+// ==== CONTACT FORM MODAL =====
+// ---- AJAX SUBMISSION ----
+const contactForm = document.getElementById("contactForm");
+if (contactForm) {
+  contactForm.addEventListener("submit", function(e) {
+      e.preventDefault();
+
+      let formData = new FormData(this);
+
+      fetch("/contact", {
+          method: "POST",
+          body: formData
+      })
+      .then(response => response.json())
+      .then(data => {
+          if(data.status === "success"){
+              alert("Message sent successfully!");
+              contactForm.reset();
+          }
+      });
+  });
+
+  // ---- LIVE VALIDATION ----
+  document.querySelectorAll("#contactForm input, #contactForm textarea")
+  .forEach(input => {
+      input.addEventListener("input", function(){
+          if(this.value.trim() === ""){
+              this.style.borderColor = "red";
+          } else {
+              this.style.borderColor = "#e2e8f0";
+          }
+      });
+  });
+}
 
 // ===== NEW CODE =====
 document.querySelectorAll('a[href^="#"]').forEach(anchor => {
