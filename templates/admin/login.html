@@ -1,7 +1,12 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-  <title>Admin Login</title>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  {% set seo_title = "Admin Login | SpydraWeb" %}
+  {% set seo_description = "Secure login page for SpydraWeb administrators." %}
+  {% set seo_robots = "noindex, nofollow, noarchive" %}
+  {% include "components/seo_meta.html" %}
   <link rel="stylesheet" href="{{ url_for('static', filename='css/admin.css') }}">
 </head>
 <body>

@@ -2,8 +2,11 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <title>Project Inquiry</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  {% set seo_title = "Project Inquiry Form | SpydraWeb" %}
+  {% set seo_description = "Submit your website project requirements to SpydraWeb and get a tailored proposal within 24 hours." %}
+  {% set seo_keywords = "project inquiry, website quote, web development inquiry, SpydraWeb" %}
+  {% include "components/seo_meta.html" %}
   <link rel="stylesheet" href="{{ url_for('static', filename='css/main.css') }}">
 </head>
 <body>
@@ -14,6 +17,7 @@
         
         <section class="form-wrapper">
         <form method="POST" class="inquiry-form">
+        <canvas id="inquiryParticles" aria-hidden="true"></canvas>
         <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
         <h2>Project Inquiry Form</h2>
         <p>I’ll get back to you within 24 hours.</p>

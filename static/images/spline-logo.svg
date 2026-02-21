@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" fill="none">
+  <defs>
+    <linearGradient id="splineGradient" x1="14" y1="14" x2="50" y2="50" gradientUnits="userSpaceOnUse">
+      <stop offset="0" stop-color="#3B82F6"/>
+      <stop offset="1" stop-color="#F97316"/>
+    </linearGradient>
+  </defs>
+  <rect x="3" y="3" width="58" height="58" rx="16" fill="#F8FAFC"/>
+  <rect x="3" y="3" width="58" height="58" rx="16" stroke="#CBD5E1" stroke-width="2"/>
+  <path d="M18 22C22 16 31 14 38 18C45 22 47 30 42 35C37 40 28 39 24 43C20 47 22 52 29 52C35 52 41 48 46 43" stroke="url(#splineGradient)" stroke-width="6" stroke-linecap="round"/>
+  <circle cx="46" cy="18" r="4" fill="#FB923C"/>
+  <circle cx="20" cy="46" r="4" fill="#38BDF8"/>
+</svg>

@@ -3,6 +3,10 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    {% set seo_title = "SpydraWeb | Budget-Friendly Web Development Partner" %}
+    {% set seo_description = "SpydraWeb builds fast, modern, and scalable websites with UI/UX design, SEO optimization, and ongoing support." %}
+    {% set seo_keywords = "web development, website design, SEO services, SpydraWeb, responsive websites" %}
+    {% include "components/seo_meta.html" %}
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;500;600;700;800&display=swap" rel="stylesheet">
@@ -12,7 +16,18 @@
             font-family: "Nunito", sans-serif;
         }
     </style>
-    <title>SpydraWeb | Your Budget Friendly Web Development Partner</title>
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "Organization",
+      "name": "SpydraWeb",
+      "url": "{{ request.url_root.rstrip('/') }}",
+      "logo": "{{ url_for('static', filename='images/spydraweb-logo.png', _external=True) }}",
+      "sameAs": [
+        "https://wa.me/919674667587"
+      ]
+    }
+    </script>
 </head>
 <body>
     {% include "components/navbar.html" %}
@@ -273,41 +288,127 @@
 
                 <!-- WEBSITE -->
                 <div class="service-panel active" id="web">
-                    <p>We build scalable, modern web applications using:</p>
-                    <div class="tool-grid">
-                    <img src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/html5/html5-original.svg">
-                    <img src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/css3/css3-original.svg">
-                    <img src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/javascript/javascript-original.svg">
-                    <img src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/python/python-original.svg">
-                    <img src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/flask/flask-original.svg">
-                    <img src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/django/django-plain.svg">
-                    <img src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/postgresql/postgresql-original.svg">
+                    <p class="service-panel-intro">We build scalable, modern web applications using:</p>
+                    <div class="tool-list">
+                    <article class="tool-bar">
+                        <img class="tool-logo" src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/html5/html5-original.svg" alt="HTML5 logo">
+                        <div class="tool-meta">
+                            <h4>HTML5</h4>
+                            <p>Semantic page structure</p>
+                        </div>
+                    </article>
+                    <article class="tool-bar">
+                        <img class="tool-logo" src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/css3/css3-original.svg" alt="CSS3 logo">
+                        <div class="tool-meta">
+                            <h4>CSS3</h4>
+                            <p>Responsive visual styling</p>
+                        </div>
+                    </article>
+                    <article class="tool-bar">
+                        <img class="tool-logo" src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/javascript/javascript-original.svg" alt="JavaScript logo">
+                        <div class="tool-meta">
+                            <h4>JavaScript</h4>
+                            <p>Dynamic UI behavior</p>
+                        </div>
+                    </article>
+                    <article class="tool-bar">
+                        <img class="tool-logo" src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/python/python-original.svg" alt="Python logo">
+                        <div class="tool-meta">
+                            <h4>Python</h4>
+                            <p>Backend business logic</p>
+                        </div>
+                    </article>
+                    <article class="tool-bar">
+                        <img class="tool-logo" src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/flask/flask-original.svg" alt="Flask logo">
+                        <div class="tool-meta">
+                            <h4>Flask</h4>
+                            <p>API and routing</p>
+                        </div>
+                    </article>
+                    <article class="tool-bar">
+                        <img class="tool-logo" src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/django/django-plain.svg" alt="Django logo">
+                        <div class="tool-meta">
+                            <h4>Django</h4>
+                            <p>Scalable web framework</p>
+                        </div>
+                    </article>
+                    <article class="tool-bar">
+                        <img class="tool-logo" src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/postgresql/postgresql-original.svg" alt="PostgreSQL logo">
+                        <div class="tool-meta">
+                            <h4>PostgreSQL</h4>
+                            <p>Relational data storage</p>
+                        </div>
+                    </article>
                     </div>
                 </div>
 
                 <!-- UI/UX -->
                 <div class="service-panel" id="uiux">
-                    <p>Designing intuitive and engaging experiences using:</p>
-                    <div class="tool-grid">
-                    <img src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/figma/figma-original.svg">
+                    <p class="service-panel-intro">Designing intuitive and engaging experiences using:</p>
+                    <div class="tool-list">
+                    <article class="tool-bar">
+                        <img class="tool-logo" src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/figma/figma-original.svg" alt="Figma logo">
+                        <div class="tool-meta">
+                            <h4>Figma</h4>
+                            <p>Wireframes and prototypes</p>
+                        </div>
+                    </article>
+                    <article class="tool-bar">
+                        <img class="tool-logo" src="https://cdn.simpleicons.org/framer/0055FF" alt="Framer logo">
+                        <div class="tool-meta">
+                            <h4>Framer</h4>
+                            <p>Interactive UI mockups</p>
+                        </div>
+                    </article>
+                    <article class="tool-bar">
+                        <img class="tool-logo" src="{{ url_for('static', filename='images/spline-logo.svg') }}" alt="Spline logo">
+                        <div class="tool-meta">
+                            <h4>Spline</h4>
+                            <p>3D interface previews</p>
+                        </div>
+                    </article>
                     </div>
                 </div>
 
                 <!-- GRAPHIC -->
                 <div class="service-panel" id="graphic">
-                    <p>Creative visual solutions powered by:</p>
-                    <div class="tool-grid">
-                    <img src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/illustrator/illustrator-plain.svg">
-                    <img src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/photoshop/photoshop-plain.svg">
+                    <p class="service-panel-intro">Creative visual solutions powered by:</p>
+                    <div class="tool-list">
+                    <article class="tool-bar">
+                        <img class="tool-logo" src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/illustrator/illustrator-plain.svg" alt="Adobe Illustrator logo">
+                        <div class="tool-meta">
+                            <h4>Adobe Illustrator</h4>
+                            <p>Vector brand assets</p>
+                        </div>
+                    </article>
+                    <article class="tool-bar">
+                        <img class="tool-logo" src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/photoshop/photoshop-plain.svg" alt="Adobe Photoshop logo">
+                        <div class="tool-meta">
+                            <h4>Adobe Photoshop</h4>
+                            <p>Image editing workflows</p>
+                        </div>
+                    </article>
                     </div>
                 </div>
 
                 <!-- CONTENT -->
                 <div class="service-panel" id="content">
-                    <p>SEO-driven and engaging content strategies.</p>
-                    <div class="tool-grid">
-                    <img src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/google/google-original.svg">
-                    <img src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/markdown/markdown-original.svg">
+                    <p class="service-panel-intro">SEO-driven and engaging content strategies.</p>
+                    <div class="tool-list">
+                    <article class="tool-bar">
+                        <img class="tool-logo" src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/google/google-original.svg" alt="Google Docs logo">
+                        <div class="tool-meta">
+                            <h4>Google Docs</h4>
+                            <p>Content drafting workflow</p>
+                        </div>
+                    </article>
+                    <article class="tool-bar">
+                        <img class="tool-logo" src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/markdown/markdown-original.svg" alt="Markdown logo">
+                        <div class="tool-meta">
+                            <h4>Markdown</h4>
+                            <p>Structured web content</p>
+                        </div>
+                    </article>
                     </div>
                 </div>
 

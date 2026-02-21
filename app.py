@@ -1,4 +1,4 @@
-from flask import Flask, render_template, request, redirect, flash, request, url_for, session, current_app, jsonify
+from flask import Flask, render_template, request, redirect, flash, request, url_for, session, current_app, jsonify, send_from_directory
 from flask_sqlalchemy import SQLAlchemy
 from flask_login import LoginManager, login_user, logout_user, login_required, current_user
 from flask.cli import with_appcontext
@@ -15,15 +15,14 @@ import requests
 from model import db, Admin, AuditLog, User, ContactMessage, Review
 
 app = Flask(__name__)
+load_dotenv()
+
 # 🔐 Secret key (required for sessions & login)
-app.config["SECRET_KEY"] = "dev-secret-key"
+app.config["SECRET_KEY"] = os.getenv("SECRET_KEY")
 
 # 🗄 Database config
-# app.config["SQLALCHEMY_DATABASE_URI"] = "sqlite:///database.db"
-app.config["SQLALCHEMY_DATABASE_URI"] = "postgresql://mohammadadeenhussain:password@localhost/spydraweb_db"
+app.config["SQLALCHEMY_DATABASE_URI"] = os.getenv("DATABASE_URL")
 app.config["SQLALCHEMY_TRACK_MODIFICATIONS"] = False
-
-load_dotenv()
 
 ADMIN_EMAIL = os.getenv("ADMIN_EMAIL")
 ADMIN_PASSWORD = os.getenv("ADMIN_PASSWORD")
@@ -230,6 +229,20 @@ def terms():
 @app.route("/refund_policy")
 def refund_policy():
     return render_template("refund.html")
+
+# ---------- PORTFOLIO ROUTE ----------
+@app.route("/portfolio")
+def portfolio():
+    return render_template("portfolio.html")
+
+# ---------- SEO FILE ROUTES ----------
+@app.route("/robots.txt")
+def robots_txt():
+    return send_from_directory(app.static_folder, "robots.txt", mimetype="text/plain")
+
+@app.route("/sitemap.xml")
+def sitemap_xml():
+    return send_from_directory(app.static_folder, "sitemap.xml", mimetype="application/xml")
 
 # ================================
 #   ADMIN ROUTES

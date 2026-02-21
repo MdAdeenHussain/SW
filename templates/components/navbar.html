@@ -12,38 +12,45 @@
       <!-- DESKTOP LINKS -->
       <nav class="nav-links">
         <a href="{{ url_for('plans') }}">Plans</a>
-        <a href="#about" class="scroll-link">About Us</a>
-        <a href="#services" class="scroll-link">Services</a>
-        <a href="#faq" class="scroll-link">FAQ</a>
-        <a href="#portfolio">Portfolio</a>
-        <a href="#contact" class="scroll-link">Contact</a>
+        <a href="{{ '#about' if request.endpoint == 'home' else url_for('home', _anchor='about') }}" class="scroll-link">About Us</a>
+        <a href="{{ '#services' if request.endpoint == 'home' else url_for('home', _anchor='services') }}" class="scroll-link">Services</a>
+        <a href="{{ '#faq' if request.endpoint == 'home' else url_for('home', _anchor='faq') }}" class="scroll-link">FAQ</a>
+        <a href="{{ url_for('portfolio') }}">Portfolio</a>
+        <a href="{{ '#contact' if request.endpoint == 'home' else url_for('home', _anchor='contact') }}" class="scroll-link">Contact</a>
       </nav>
 
       <!-- RIGHT ACTIONS -->
       <div class="nav-actions">
         <a href="{{ url_for('inquiry') }}" class="btn-primary">Hire Me</a>
-        <div class="hamburger" onclick="openMobileMenu()">☰</div>
+        <button class="hamburger" type="button" aria-label="Open menu" aria-expanded="false" aria-controls="mobileMenu">
+          <span class="hamburger-line"></span>
+          <span class="hamburger-line"></span>
+          <span class="hamburger-line"></span>
+        </button>
       </div>
 
     </div>
   </header>
 
   <!-- MOBILE OVERLAY -->
-  <div id="mobileOverlay" class="mobile-overlay" onclick="closeMobileMenu()"></div>
+  <div id="mobileOverlay" class="mobile-overlay"></div>
 
   <!-- MOBILE MENU -->
   <div id="mobileMenu" class="mobile-menu">
     <div class="mobile-menu-header">
       <span>Menu</span>
-      <span class="close-btn" onclick="closeMobileMenu()">✕</span>
+      <button class="close-btn close-menu" type="button" aria-label="Close menu">
+        <span class="close-line"></span>
+        <span class="close-line"></span>
+      </button>
     </div>
 
     <div class="mobile-menu-content">
-      <a href="{{ url_for('plans') }}" onclick="closeMobileMenu()">Plans</a>
-      <a href="#about" class="scroll-link" onclick="closeMobileMenu()">About Us</a>
-      <a href="#services" class="scroll-link" onclick="closeMobileMenu()">Services</a>
-      <a href="#faq" class="scroll-link" onclick="closeMobileMenu()">FAQ</a>
-      <a href="#portfolio" onclick="closeMobileMenu()">Portfolio</a>
-      <a href="#contact" class="scroll-link" onclick="closeMobileMenu()">Contact</a>
+      <a href="{{ url_for('plans') }}" class="close-menu">Plans</a>
+      <a href="{{ '#about' if request.endpoint == 'home' else url_for('home', _anchor='about') }}" class="scroll-link close-menu">About Us</a>
+      <a href="{{ '#services' if request.endpoint == 'home' else url_for('home', _anchor='services') }}" class="scroll-link close-menu">Services</a>
+      <a href="{{ '#faq' if request.endpoint == 'home' else url_for('home', _anchor='faq') }}" class="scroll-link close-menu">FAQ</a>
+      <a href="{{ url_for('portfolio') }}" class="close-menu">Portfolio</a>
+      <a href="{{ '#contact' if request.endpoint == 'home' else url_for('home', _anchor='contact') }}" class="scroll-link close-menu">Contact</a>
     </div>
   </div>

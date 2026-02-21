@@ -1,0 +1,26 @@
+{% set seo_title = seo_title | default("SpydraWeb | Web Development Services") %}
+{% set seo_description = seo_description | default("SpydraWeb builds fast, modern, and scalable websites for businesses.") %}
+{% set seo_robots = seo_robots | default("index, follow") %}
+{% set seo_type = seo_type | default("website") %}
+{% set seo_url = seo_url | default(request.base_url) %}
+{% set seo_image = seo_image | default(url_for('static', filename='images/spydraweb-logo.png', _external=True)) %}
+
+<title>{{ seo_title }}</title>
+<meta name="description" content="{{ seo_description }}">
+<meta name="robots" content="{{ seo_robots }}">
+{% if seo_keywords %}
+<meta name="keywords" content="{{ seo_keywords }}">
+{% endif %}
+<link rel="canonical" href="{{ seo_url }}">
+
+<meta property="og:type" content="{{ seo_type }}">
+<meta property="og:site_name" content="SpydraWeb">
+<meta property="og:title" content="{{ seo_title }}">
+<meta property="og:description" content="{{ seo_description }}">
+<meta property="og:url" content="{{ seo_url }}">
+<meta property="og:image" content="{{ seo_image }}">
+
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="{{ seo_title }}">
+<meta name="twitter:description" content="{{ seo_description }}">
+<meta name="twitter:image" content="{{ seo_image }}">

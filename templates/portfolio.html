@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  {% set seo_title = "Portfolio | SpydraWeb" %}
+  {% set seo_description = "Explore SpydraWeb portfolio projects across business websites, e-commerce, landing pages, and product-focused web apps." %}
+  {% set seo_keywords = "SpydraWeb portfolio, web development projects, website case studies, UI UX portfolio" %}
+  {% include "components/seo_meta.html" %}
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/main.css') }}">
+</head>
+<body>
+  {% include "components/navbar.html" %}
+
+  <div class="page-content">
+    <section class="portfolio-page">
+      <section class="portfolio-hero">
+        <h1>Recent Work & Case Highlights</h1>
+        <p>
+          A snapshot of projects we have crafted for startups, creators, and growing businesses.
+          Each build focuses on speed, clarity, and conversion-ready user experience.
+        </p>
+      </section>
+
+      <section class="portfolio-grid">
+        <article class="portfolio-card">
+          <div class="portfolio-thumb portfolio-thumb--commerce"><span>E-Commerce</span></div>
+          <div class="portfolio-body">
+            <h2>UrbanCart Online Store</h2>
+            <p>Full-stack shopping platform with catalog management, secure checkout flow, and performance optimization.</p>
+            <ul class="portfolio-tags">
+              <li>Flask</li><li>PostgreSQL</li><li>Razorpay</li><li>SEO Setup</li>
+            </ul>
+          </div>
+        </article>
+
+        <article class="portfolio-card">
+          <div class="portfolio-thumb portfolio-thumb--business"><span>Business Site</span></div>
+          <div class="portfolio-body">
+            <h2>Vertex Consulting</h2>
+            <p>Service-driven corporate website with conversion-first content structure, lead capture, and admin-managed updates.</p>
+            <ul class="portfolio-tags">
+              <li>Responsive UI</li><li>CMS Ready</li><li>Contact Funnels</li><li>Analytics</li>
+            </ul>
+          </div>
+        </article>
+
+        <article class="portfolio-card">
+          <div class="portfolio-thumb portfolio-thumb--launch"><span>Launch Page</span></div>
+          <div class="portfolio-body">
+            <h2>Nexa App Pre-Launch</h2>
+            <p>High-speed landing page built for early signups with strong messaging hierarchy and scroll-based storytelling.</p>
+            <ul class="portfolio-tags">
+              <li>Framer Motion</li><li>A/B Blocks</li><li>CTA Testing</li><li>Lead Forms</li>
+            </ul>
+          </div>
+        </article>
+
+        <article class="portfolio-card">
+          <div class="portfolio-thumb portfolio-thumb--agency"><span>Agency Portfolio</span></div>
+          <div class="portfolio-body">
+            <h2>Studio Halo Portfolio</h2>
+            <p>Modern portfolio for a creative agency with project filters, visual storytelling, and brand-centric layouts.</p>
+            <ul class="portfolio-tags">
+              <li>Figma to Web</li><li>GSAP</li><li>Lazy Load</li><li>Accessibility</li>
+            </ul>
+          </div>
+        </article>
+
+        <article class="portfolio-card">
+          <div class="portfolio-thumb portfolio-thumb--education"><span>Education</span></div>
+          <div class="portfolio-body">
+            <h2>SkillBridge Academy</h2>
+            <p>Course-focused website with multi-page curriculum flow, downloadable resources, and student inquiry system.</p>
+            <ul class="portfolio-tags">
+              <li>Course Pages</li><li>Inquiry Flow</li><li>Form Logic</li><li>Mail Alerts</li>
+            </ul>
+          </div>
+        </article>
+
+        <article class="portfolio-card">
+          <div class="portfolio-thumb portfolio-thumb--saas"><span>SaaS Platform</span></div>
+          <div class="portfolio-body">
+            <h2>OpsPilot Dashboard</h2>
+            <p>Product interface and marketing site combo for a SaaS tool with account onboarding and workflow previews.</p>
+            <ul class="portfolio-tags">
+              <li>Dashboard UI</li><li>Auth Flow</li><li>Performance</li><li>Cloud Deploy</li>
+            </ul>
+          </div>
+        </article>
+      </section>
+
+      <section class="portfolio-cta">
+        <h2>Want a similar project for your brand?</h2>
+        <p>Tell us your goals and we will design a custom scope with timeline and budget options.</p>
+        <a href="{{ url_for('inquiry') }}" class="portfolio-cta-btn">Start Your Project</a>
+      </section>
+    </section>
+  </div>
+
+  {% include "components/footer.html" %}
+  <script src="{{ url_for('static', filename='js/main.js') }}"></script>
+</body>
+</html>

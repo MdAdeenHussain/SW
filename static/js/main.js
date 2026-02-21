@@ -4,6 +4,7 @@ document.addEventListener("DOMContentLoaded", function () {
   const hamburger = document.querySelector(".hamburger");
   const mobileMenu = document.querySelector(".mobile-menu");
   const mobileOverlay = document.querySelector(".mobile-overlay");
+  const closeTargets = document.querySelectorAll(".close-menu");
 
   if (!hamburger || !mobileMenu || !mobileOverlay) {
     return; // page without navbar
@@ -12,21 +13,38 @@ document.addEventListener("DOMContentLoaded", function () {
   function openMenu() {
     mobileMenu.classList.add("active");
     mobileOverlay.classList.add("active");
+    hamburger.classList.add("active");
+    hamburger.setAttribute("aria-expanded", "true");
     document.body.classList.add("no-scroll");
   }
 
   function closeMenu() {
     mobileMenu.classList.remove("active");
     mobileOverlay.classList.remove("active");
+    hamburger.classList.remove("active");
+    hamburger.setAttribute("aria-expanded", "false");
     document.body.classList.remove("no-scroll");
   }
 
-  hamburger.addEventListener("click", openMenu);
+  function toggleMenu() {
+    if (mobileMenu.classList.contains("active")) {
+      closeMenu();
+      return;
+    }
+    openMenu();
+  }
+
+  hamburger.addEventListener("click", toggleMenu);
   mobileOverlay.addEventListener("click", closeMenu);
 
-  // Optional close button inside menu
-  document.querySelectorAll(".close-menu").forEach(btn => {
-    btn.addEventListener("click", closeMenu);
+  closeTargets.forEach(target => {
+    target.addEventListener("click", closeMenu);
+  });
+
+  document.addEventListener("keydown", function (event) {
+    if (event.key === "Escape" && mobileMenu.classList.contains("active")) {
+      closeMenu();
+    }
   });
 
 });
@@ -344,98 +362,103 @@ window.addEventListener("load", () => {
 // ===== CONTACT CARD PARTICLES =====
 document.addEventListener("DOMContentLoaded", function () {
 
-  const canvas = document.getElementById("contactParticles");
-  if (!canvas) return;
+  function initCardParticles(canvasId, cardSelector) {
+    const canvas = document.getElementById(canvasId);
+    if (!canvas) return;
 
-  const card = canvas.closest(".contact-card");
-  if (!card) return;
+    const card = canvas.closest(cardSelector);
+    if (!card) return;
 
-  const ctx = canvas.getContext("2d");
-  const particles = [];
-  const count = window.innerWidth < 900 ? 22 : 40;
-  let width = 0;
-  let height = 0;
+    const ctx = canvas.getContext("2d");
+    const particles = [];
+    const count = window.innerWidth < 900 ? 22 : 40;
+    let width = 0;
+    let height = 0;
 
-  function resize() {
-    width = card.clientWidth;
-    height = card.clientHeight;
-    canvas.width = width;
-    canvas.height = height;
-  }
-
-  window.addEventListener("resize", resize);
-  resize();
-
-  class ContactParticle {
-    constructor(y) {
-      this.reset(y);
+    function resize() {
+      width = card.clientWidth;
+      height = card.clientHeight;
+      canvas.width = width;
+      canvas.height = height;
     }
 
-    reset(y) {
-      this.x = Math.random() * width;
-      this.y = y !== undefined ? y : height + Math.random() * 36;
-      this.radius = Math.random() * 2 + 1;
-      this.speed = Math.random() * 0.45 + 0.2;
-      this.drift = (Math.random() - 0.5) * 0.25;
-      this.alpha = Math.random() * 0.35 + 0.1;
-    }
+    window.addEventListener("resize", resize);
+    resize();
 
-    update() {
-      this.y -= this.speed;
-      this.x += this.drift;
+    class FloatingParticle {
+      constructor(y) {
+        this.reset(y);
+      }
 
-      if (this.y < -12 || this.x < -12 || this.x > width + 12) {
-        this.reset();
+      reset(y) {
+        this.x = Math.random() * width;
+        this.y = y !== undefined ? y : height + Math.random() * 36;
+        this.radius = Math.random() * 2 + 1;
+        this.speed = Math.random() * 0.45 + 0.2;
+        this.drift = (Math.random() - 0.5) * 0.25;
+        this.alpha = Math.random() * 0.35 + 0.1;
+      }
+
+      update() {
+        this.y -= this.speed;
+        this.x += this.drift;
+
+        if (this.y < -12 || this.x < -12 || this.x > width + 12) {
+          this.reset();
+        }
+      }
+
+      draw() {
+        ctx.beginPath();
+        ctx.arc(this.x, this.y, this.radius, 0, Math.PI * 2);
+        ctx.fillStyle = `rgba(255, 255, 255, ${this.alpha})`;
+        ctx.fill();
       }
     }
 
-    draw() {
-      ctx.beginPath();
-      ctx.arc(this.x, this.y, this.radius, 0, Math.PI * 2);
-      ctx.fillStyle = `rgba(255, 255, 255, ${this.alpha})`;
-      ctx.fill();
+    for (let i = 0; i < count; i++) {
+      particles.push(new FloatingParticle(Math.random() * height));
     }
-  }
 
-  for (let i = 0; i < count; i++) {
-    particles.push(new ContactParticle(Math.random() * height));
-  }
+    function connectParticles() {
+      const maxDistance = 72;
 
-  function connectParticles() {
-    const maxDistance = 72;
+      for (let a = 0; a < particles.length; a++) {
+        for (let b = a + 1; b < particles.length; b++) {
+          const dx = particles[a].x - particles[b].x;
+          const dy = particles[a].y - particles[b].y;
+          const distance = Math.sqrt(dx * dx + dy * dy);
 
-    for (let a = 0; a < particles.length; a++) {
-      for (let b = a + 1; b < particles.length; b++) {
-        const dx = particles[a].x - particles[b].x;
-        const dy = particles[a].y - particles[b].y;
-        const distance = Math.sqrt(dx * dx + dy * dy);
-
-        if (distance < maxDistance) {
-          const lineOpacity = (1 - distance / maxDistance) * 0.14;
-          ctx.strokeStyle = `rgba(255, 255, 255, ${lineOpacity})`;
-          ctx.lineWidth = 1;
-          ctx.beginPath();
-          ctx.moveTo(particles[a].x, particles[a].y);
-          ctx.lineTo(particles[b].x, particles[b].y);
-          ctx.stroke();
+          if (distance < maxDistance) {
+            const lineOpacity = (1 - distance / maxDistance) * 0.14;
+            ctx.strokeStyle = `rgba(255, 255, 255, ${lineOpacity})`;
+            ctx.lineWidth = 1;
+            ctx.beginPath();
+            ctx.moveTo(particles[a].x, particles[a].y);
+            ctx.lineTo(particles[b].x, particles[b].y);
+            ctx.stroke();
+          }
         }
       }
     }
+
+    function animate() {
+      ctx.clearRect(0, 0, width, height);
+
+      particles.forEach(particle => {
+        particle.update();
+        particle.draw();
+      });
+
+      connectParticles();
+      requestAnimationFrame(animate);
+    }
+
+    animate();
   }
 
-  function animate() {
-    ctx.clearRect(0, 0, width, height);
-
-    particles.forEach(particle => {
-      particle.update();
-      particle.draw();
-    });
-
-    connectParticles();
-    requestAnimationFrame(animate);
-  }
-
-  animate();
+  initCardParticles("contactParticles", ".contact-card");
+  initCardParticles("inquiryParticles", ".inquiry-form");
 });
 
 // ===== TECH/FLAG SCROLL =====
@@ -447,8 +470,30 @@ document.addEventListener("DOMContentLoaded", function () {
 
     if (!wrapper || !scroll) return;
 
-    // Duplicate content
-    scroll.innerHTML += scroll.innerHTML;
+    const originalHTML = scroll.innerHTML;
+    if (!originalHTML.trim()) return;
+
+    const originalItems = Array.from(scroll.children);
+    const gapValue = getComputedStyle(scroll).columnGap || getComputedStyle(scroll).gap || "0";
+    const gap = parseFloat(gapValue) || 0;
+
+    const cycleWidth = originalItems.reduce((total, item) => {
+      return total + item.getBoundingClientRect().width;
+    }, 0) + (Math.max(originalItems.length - 1, 0) * gap);
+
+    if (cycleWidth <= 0) return;
+
+    // Ensure repeated content is wide enough for seamless looping on wide screens.
+    let copies = 1;
+    while (scroll.scrollWidth < wrapper.clientWidth + cycleWidth && copies < 8) {
+      scroll.innerHTML += originalHTML;
+      copies += 1;
+    }
+
+    if (copies === 1) {
+      scroll.innerHTML += originalHTML;
+      copies = 2;
+    }
 
     let isPaused = false;
 
@@ -456,8 +501,8 @@ document.addEventListener("DOMContentLoaded", function () {
       if (!isPaused) {
         wrapper.scrollLeft += speed;
 
-        if (wrapper.scrollLeft >= scroll.scrollWidth / 2) {
-          wrapper.scrollLeft = 0;
+        if (wrapper.scrollLeft >= cycleWidth) {
+          wrapper.scrollLeft -= cycleWidth;
         }
       }
       requestAnimationFrame(animate);
