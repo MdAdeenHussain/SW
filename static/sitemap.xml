@@ -21,11 +21,6 @@
     <priority>0.8</priority>
   </url>
   <url>
-    <loc>https://www.spydraweb.com/inquiry</loc>
-    <changefreq>weekly</changefreq>
-    <priority>0.8</priority>
-  </url>
-  <url>
     <loc>https://www.spydraweb.com/privacy</loc>
     <changefreq>yearly</changefreq>
     <priority>0.4</priority>

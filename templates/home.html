@@ -46,7 +46,7 @@
             <div class="hero-content">
                 <h1>Building Modern Web Experiences</h1>
                 <p>We craft high-performance, scalable websites that turn ideas into powerful digital experiences. 🚀</p>
-                <a href="{{ url_for('inquiry') }}" class="hero-btn" id="heroBtn">
+                <a href="#contact" class="hero-btn scroll-link" id="heroBtn">
                 Get a Free Quote
                 </a>
             </div>
@@ -232,22 +232,23 @@
                 <div class="about-content">
                 <h2>Define Us</h2>
 
-                <p>
-                    We are a passionate web development team dedicated to turning ideas into powerful digital experiences. In today’s fast-moving digital world, having just a website isn’t enough — you need a platform that performs, engages, and grows with your business. That’s where we come in. We focus on building fast, secure, and scalable websites that not only look modern but also deliver real results.
-                </p>
-                <p>
-                    Our approach combines clean, user-centered design with strong backend architecture to ensure smooth performance and long-term reliability. From responsive frontends to optimized databases and seamless integrations, every project is crafted with attention to detail and future scalability in mind. We believe great development is not just about writing code — it’s about solving problems, improving user experience, and creating meaningful digital impact.
-                </p>
-                <p>
-                    Whether you’re a startup building your first online presence or a growing brand looking to upgrade your platform, we work closely with you to understand your goals and transform them into a strategic, high-performing solution. At the core of everything we do is a commitment to quality, transparency, and continuous improvement — because your growth is our success.
-                </p>
-
-                <ul class="about-highlights">
-                    <li>✔ Clean & Modern UI</li>
-                    <li>✔ Scalable Backend Architecture</li>
-                    <li>✔ Performance Optimized Code</li>
-                    <li>✔ Client-Focused Solutions</li>
-                </ul>
+                <div class="about-text-box">
+                    <p>
+                        We are a passionate web development team dedicated to turning ideas into powerful digital experiences. In today’s fast-moving digital world, having just a website isn’t enough — you need a platform that performs, engages, and grows with your business. That’s where we come in. We focus on building fast, secure, and scalable websites that not only look modern but also deliver real results.
+                    </p>
+                    <p>
+                        Our approach combines clean, user-centered design with strong backend architecture to ensure smooth performance and long-term reliability. From responsive frontends to optimized databases and seamless integrations, every project is crafted with attention to detail and future scalability in mind. We believe great development is not just about writing code — it’s about solving problems, improving user experience, and creating meaningful digital impact.
+                    </p>
+                    <p>
+                        Whether you’re a startup building your first online presence or a growing brand looking to upgrade your platform, we work closely with you to understand your goals and transform them into a strategic, high-performing solution. At the core of everything we do is a commitment to quality, transparency, and continuous improvement — because your growth is our success.
+                    </p>
+                    <ul class="about-highlights">
+                        <li>Clean & Modern UI</li>
+                        <li>Scalable Backend Architecture</li>
+                        <li>Performance Optimized Code</li>
+                        <li>Client-Focused Solutions</li>
+                    </ul>
+                </div>
 
                 </div>
 
@@ -267,6 +268,10 @@
 
                     <div class="service-item active" data-service="web">
                         Website Development
+                    </div>
+
+                    <div class="service-item" data-service="ecommerce">
+                        E-Commerce
                     </div>
 
                     <div class="service-item" data-service="uiux">
@@ -342,6 +347,55 @@
                     </div>
                 </div>
 
+                <!-- E-COMMERCE -->
+                <div class="service-panel" id="ecommerce">
+                    <p class="service-panel-intro">End-to-end e-commerce solutions combining web development and web design:</p>
+                    <div class="tool-list">
+                    <article class="tool-bar">
+                        <img class="tool-logo" src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/html5/html5-original.svg" alt="HTML5 logo">
+                        <div class="tool-meta">
+                            <h4>HTML5</h4>
+                            <p>Structured storefront layout</p>
+                        </div>
+                    </article>
+                    <article class="tool-bar">
+                        <img class="tool-logo" src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/css3/css3-original.svg" alt="CSS3 logo">
+                        <div class="tool-meta">
+                            <h4>CSS3</h4>
+                            <p>Responsive product page design</p>
+                        </div>
+                    </article>
+                    <article class="tool-bar">
+                        <img class="tool-logo" src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/javascript/javascript-original.svg" alt="JavaScript logo">
+                        <div class="tool-meta">
+                            <h4>JavaScript</h4>
+                            <p>Cart and checkout interactions</p>
+                        </div>
+                    </article>
+                    <article class="tool-bar">
+                        <img class="tool-logo" src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/python/python-original.svg" alt="Python logo">
+                        <div class="tool-meta">
+                            <h4>Python</h4>
+                            <p>Order and payment workflows</p>
+                        </div>
+                    </article>
+                    <article class="tool-bar">
+                        <img class="tool-logo" src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/figma/figma-original.svg" alt="Figma logo">
+                        <div class="tool-meta">
+                            <h4>Figma</h4>
+                            <p>Conversion-focused UI design</p>
+                        </div>
+                    </article>
+                    <article class="tool-bar">
+                        <img class="tool-logo" src="{{ url_for('static', filename='images/shopify-logo.svg') }}" alt="Shopify logo">
+                        <div class="tool-meta">
+                            <h4>Shopify</h4>
+                            <p>Store platform and integrations</p>
+                        </div>
+                    </article>
+                    </div>
+                </div>
+
                 <!-- UI/UX -->
                 <div class="service-panel" id="uiux">
                     <p class="service-panel-intro">Designing intuitive and engaging experiences using:</p>
@@ -375,17 +429,17 @@
                     <p class="service-panel-intro">Creative visual solutions powered by:</p>
                     <div class="tool-list">
                     <article class="tool-bar">
-                        <img class="tool-logo" src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/illustrator/illustrator-plain.svg" alt="Adobe Illustrator logo">
+                        <img class="tool-logo" src="https://cdn.jsdelivr.net/npm/simple-icons@v11/icons/canva.svg" alt="Canva logo">
                         <div class="tool-meta">
-                            <h4>Adobe Illustrator</h4>
-                            <p>Vector brand assets</p>
+                            <h4>Canva</h4>
+                            <p>Quick brand asset design</p>
                         </div>
                     </article>
                     <article class="tool-bar">
-                        <img class="tool-logo" src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/photoshop/photoshop-plain.svg" alt="Adobe Photoshop logo">
+                        <img class="tool-logo" src="https://cdn.simpleicons.org/inkscape/000000" alt="Inkscape logo">
                         <div class="tool-meta">
-                            <h4>Adobe Photoshop</h4>
-                            <p>Image editing workflows</p>
+                            <h4>Inkscape</h4>
+                            <p>Open-source vector graphics</p>
                         </div>
                     </article>
                     </div>

@@ -21,7 +21,7 @@
 
       <!-- RIGHT ACTIONS -->
       <div class="nav-actions">
-        <a href="{{ url_for('inquiry') }}" class="btn-primary">Hire Me</a>
+        <a href="{{ '#contact' if request.endpoint == 'home' else url_for('home', _anchor='contact') }}" class="btn-primary scroll-link">Hire Me</a>
         <button class="hamburger" type="button" aria-label="Open menu" aria-expanded="false" aria-controls="mobileMenu">
           <span class="hamburger-line"></span>
           <span class="hamburger-line"></span>

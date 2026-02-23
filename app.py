@@ -12,7 +12,7 @@ import os
 import click
 import requests
 
-from model import db, Admin, AuditLog, User, ContactMessage, Review
+from model import db, Admin, AuditLog, ContactMessage, Review
 
 app = Flask(__name__)
 load_dotenv()
@@ -147,40 +147,6 @@ def review_page():
         "legals/review.html",
         recaptcha_site_key=RECAPTCHA_SITE_KEY
     )
-
-# ---------- INQUIRY FORM ROUTE ----------
-@app.route("/inquiry", methods=["GET", "POST"])
-def inquiry():
-    selected_plan = request.args.get("plan", "")
-
-    if request.method == "POST":
-        addons = request.form.getlist("addons")
-
-        user = User(
-            full_name=request.form.get("full_name"),
-            email=request.form.get("email"),
-            phone=request.form.get("phone"),
-            company=request.form.get("company"),
-            country_timezone=request.form.get("country_timezone"),
-
-            project_type=", ".join(request.form.getlist("project_type")),
-            project_goals=request.form.get("project_goals"),
-            features=", ".join(request.form.getlist("features")),
-
-            selected_plan=request.form.get("selected_plan"),
-            addons=", ".join(addons),
-
-            timeline=request.form.get("timeline"),
-            budget=request.form.get("budget"),
-            references=request.form.get("references")
-        )
-
-        db.session.add(user)
-        db.session.commit()
-
-        return redirect(url_for("inquiry"))
-
-    return render_template("user/inquiry.html", selected_plan=selected_plan)
 
 # ---------- CONTACT ROUTE ----------
 @app.route("/contact", methods=["POST"])
@@ -355,89 +321,12 @@ def change_admin_credentials():
 @app.route("/admin/dashboard")
 @login_required
 def admin_dashboard():
-    inquiries_count = User.query.count()
+    contact_messages_count = ContactMessage.query.count()
 
     return render_template(
         "admin/dashboard.html",
-        inquiries_count=inquiries_count
+        contact_messages_count=contact_messages_count
     )
-
-# ---------- ADMIN INQUIRY ----------
-@app.route("/admin/inquiries")
-@login_required
-def admin_inquiries():
-    # 🔍 Search & filter inputs
-    search = request.args.get("search", "")
-    status = request.args.get("status", "")
-
-    # 📄 Pagination inputs
-    page = request.args.get("page", 1, type=int)
-    per_page = 10
-
-    query = User.query
-
-    # 🔍 Search by name or email
-    if search:
-        query = query.filter(
-            (User.full_name.ilike(f"%{search}%")) |
-            (User.email.ilike(f"%{search}%"))
-        )
-
-    # 🟢 Filter by contacted status
-    if status == "contacted":
-        query = query.filter(User.is_contacted == True)
-    elif status == "pending":
-        query = query.filter(User.is_contacted == False)
-
-    # 📑 Order newest first
-    query = query.order_by(User.created_at.desc())
-
-    # 📄 Apply pagination
-    pagination = query.paginate(
-        page=page,
-        per_page=per_page,
-        error_out=False
-    )
-
-    # 🎯 Render page
-    return render_template(
-        "admin/inquiries.html",
-        inquiries=pagination.items,
-        pagination=pagination,
-        search=search,
-        status=status
-    )
-
-@app.route("/admin/inquiry/<int:id>")
-@login_required
-def admin_inquiry_detail(id):
-    inquiry = User.query.get_or_404(id)
-    log_action(f"Viewed inquiry #{id}")
-    return render_template(
-        "admin/inquiry_detail.html",
-        inquiry=inquiry
-    )
-
-@app.route("/admin/inquiry/<int:id>/toggle", methods=["POST"])
-@login_required
-def toggle_inquiry_status(id):
-    inquiry = User.query.get_or_404(id)
-    inquiry.is_contacted = not inquiry.is_contacted
-    db.session.commit()
-
-    status = "Contacted" if inquiry.is_contacted else "Pending"
-    log_action(f"Marked inquiry #{id} as {status}")
-    return redirect(request.referrer or url_for("admin_inquiries"))
-    # return jsonify({"success": True})
-
-@app.route("/admin/inquiry/<int:id>/delete", methods=["POST"])
-@login_required
-def delete_inquiry(id):
-    inquiry = User.query.get_or_404(id)
-    db.session.delete(inquiry)
-    db.session.commit()
-    log_action(f"Deleted inquiry #{id}")
-    return redirect(url_for("admin_inquiries"))
 
 # ---------- ADMIN CONTACT MESSAGES ----------
 @app.route("/admin/contact-messages")

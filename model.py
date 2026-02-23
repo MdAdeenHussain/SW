@@ -32,32 +32,6 @@ class Admin(UserMixin, db.Model):
     def check_password(self, raw_password):
         return check_password_hash(self.password_hash, raw_password)
 
-class User(UserMixin, db.Model):
-    __tablename__="project_inquiries"
-    id = db.Column(db.Integer, primary_key=True)
-
-    full_name = db.Column(db.String(100), nullable=False)
-    email = db.Column(db.String(120), nullable=False)
-    phone = db.Column(db.String(20))
-    company = db.Column(db.String(120))
-    country_timezone = db.Column(db.String(100))
-
-    # Project Details
-    project_type = db.Column(db.Text)          # comma-separated
-    project_goals = db.Column(db.Text)
-
-    features = db.Column(db.Text)              # comma-separated
-
-    selected_plan = db.Column(db.String(100))
-    addons = db.Column(db.Text)
-    
-    timeline = db.Column(db.String(50))
-    budget = db.Column(db.String(50))
-    references = db.Column(db.Text)
-
-    is_contacted = db.Column(db.Boolean, default=False)
-    created_at = db.Column(db.DateTime, server_default=db.func.now())
-
 class ContactMessage(db.Model):
     __tablename__ = "contact_messages"
 
