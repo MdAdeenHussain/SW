@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  {% set seo_title = "Admin Panel | SpydraWeb" %}
+  {% set seo_description = "Secure administration area for SpydraWeb." %}
+  {% set seo_robots = "noindex, nofollow, noarchive" %}
+  {% include "components/seo_meta.html" %}
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/admin.css') }}">
+</head>
+<body>
+
+<button
+  class="admin-menu-toggle"
+  type="button"
+  aria-label="Toggle admin menu"
+  aria-expanded="false"
+  aria-controls="adminSidebar"
+>
+  <span class="admin-menu-icon" aria-hidden="true">
+    <span></span>
+    <span></span>
+    <span></span>
+  </span>
+</button>
+
+<div class="admin-wrapper">
+
+  <!-- SIDEBAR -->
+  <aside class="admin-sidebar" id="adminSidebar">
+    <h2 class="logo">Admin</h2>
+
+    <nav>
+      <a href="{{ url_for('admin_dashboard') }}">Dashboard</a>
+      <a href="{{ url_for('admin_contact_messages') }}">Contact Messages</a>
+      <a href="{{ url_for('admin_reviews') }}">Reviews</a>
+      <a href="{{ url_for('admin_audit_logs') }}">Audit Logs</a>
+      <a href="{{ url_for('change_admin_credentials') }}">Change Credentials</a>
+      <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+      <a href="{{ url_for('admin_logout') }}">Logout</a>
+    </nav>
+  </aside>
+  <div class="admin-sidebar-overlay" id="adminSidebarOverlay"></div>
+
+  <!-- MAIN CONTENT -->
+  <main class="admin-content">
+    {% block content %}{% endblock %}
+  </main>
+
+</div>
+
+<script src="{{ url_for('static', filename='js/admin-layout.js') }}" defer></script>
+</body>
+</html>

@@ -1,0 +1,7 @@
+User-agent: *
+Allow: /
+
+Disallow: /admin/
+Disallow: /404
+
+Sitemap: https://www.spydraweb.com/sitemap.xml

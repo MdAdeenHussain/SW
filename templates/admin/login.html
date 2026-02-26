@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  {% set seo_title = "Admin Login | SpydraWeb" %}
+  {% set seo_description = "Secure login page for SpydraWeb administrators." %}
+  {% set seo_robots = "noindex, nofollow, noarchive" %}
+  {% include "components/seo_meta.html" %}
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/admin.css') }}">
+</head>
+<body>
+
+<section class="form-wrapper">
+<form method="POST" class="admin-form">
+
+<h2>Admin Login</h2>
+
+{% with messages = get_flashed_messages(category_filter=["error"]) %}
+  {% if messages %}
+    <div class="form-error">{{ messages[0] }}</div>
+  {% endif %}
+{% endwith %}
+<input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+<input type="email" name="email" placeholder="Admin Email" required>
+<input type="password" name="password" placeholder="Password" required>
+
+<button type="submit" class="btn-primary">Login</button>
+
+</form>
+</section>
+
+</body>
+</html>

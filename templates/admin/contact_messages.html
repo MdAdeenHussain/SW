@@ -1,0 +1,27 @@
+{% extends "admin/layout.html" %}
+
+{% block content %}
+
+<h2>Contact Messages</h2>
+
+<table border="1" cellpadding="10">
+  <tr>
+    <th>Name</th>
+    <th>Email</th>
+    <th>Phone</th>
+    <th>Subject</th>
+    <th>Date</th>
+  </tr>
+
+  {% for msg in messages %}
+  <tr>
+    <td>{{ msg.name }}</td>
+    <td>{{ msg.email }}</td>
+    <td>{{ msg.phone }}</td>
+    <td>{{ msg.subject }}</td>
+    <td>{{ msg.created_at.strftime('%d %b %Y') }}</td>
+  </tr>
+  {% endfor %}
+</table>
+
+{% endblock %}
